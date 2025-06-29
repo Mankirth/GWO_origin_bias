@@ -1,22 +1,10 @@
-<div align="center">
-<img width="200" alt="EvoloPy-logo" src="https://github.com/user-attachments/assets/496f9a76-1fcc-4e4f-9586-8f327a434134">
-</div>
-
-# EvoloPy: An open source nature-inspired optimization toolbox for global optimization in Python
-
-The EvoloPy toolbox provides classical and recent nature-inspired metaheuristic for the global optimization. The list of optimizers that have been implemented includes Particle Swarm Optimization (PSO), Multi-Verse Optimizer (MVO), Grey Wolf Optimizer (GWO), and Moth Flame Optimization (MFO). The full list of implemented optimizers is available here https://github.com/7ossam81/EvoloPy/wiki/List-of-optimizers
-
-If you like our framework then we would really appreciate **a Star ⭐!**
+# Modified Grey Wolf Optimization
 
 
 ## Features
-- Fourteen nature-inspired metaheuristic optimizers were implemented.
-- The implementation uses the fast array manipulation using `NumPy`.
-- Matrix support using `SciPy`'s package.
-- More optimizers is coming soon.
-
-## Installation
-- Python 3.6 or higher is required.
+- You can find GWO_modified_v1.py and GWO_modified_v2.py in Optimizers directory.
+- GWO_modified_v1 is based on the assumption of center bias of GWO.
+- GWO_modified_v2 is based on the assumption of origin bias of GWO.
 
 Run
 
@@ -65,43 +53,23 @@ Choose whether to Export the results in different formats. For example:
 export_flags = {'Export_avg':True, 'Export_details':True, 'Export_convergence':True, 'Export_boxplot':True}
 ```
 
-Now your experiment is ready to run. Enjoy!
-
 Run the example file:
 ```
 python examples/example.py
 ```
 
-
-## Contribute
-- **Issue Tracker**: https://github.com/7ossam81/EvoloPy/issues  
-- **Source Code**: https://github.com/7ossam81/EvoloPy
-
 ## Useful Links
-- **Video Demo**:https://www.youtube.com/watch?v=8t10SyrhDjQ
-- **Paper source**: https://github.com/7ossam81/EvoloPy
-- **Paper**: https://www.scitepress.org/Papers/2016/60482/60482.pdf
-- **Poster source**: https://github.com/7ossam81/EvoloPy-poster
-- **Live Demo**: http://evo-ml.com/evolopy-live-demo/
+- **Paper**: 
 
-## List of contributors
-- 7ossam81
-- RaneemQaddoura
-- aljarrahcs
-- jbae11
-- dietmarwo
-- bionboy
-- deepak-158
-- JJ
+## Author
+Kelly
 
 ## Reference
-
-For more information about EvoloPy, please refer to our paper: 
 
 Faris, Hossam, Ibrahim Aljarah, Seyedali Mirjalili, Pedro A. Castillo, and Juan Julián Merelo Guervós. "EvoloPy: An Open-source Nature-inspired Optimization Framework in Python." In IJCCI (ECTA), pp. 171-177. 2016.
 https://www.scitepress.org/Papers/2016/60482/60482.pdf
 
-Please include the following related citations:
+Include the following related citations:
 
 - Qaddoura, Raneem, Hossam Faris, Ibrahim Aljarah, and Pedro A. Castillo. "EvoCluster: An Open-Source Nature-Inspired Optimization Clustering Framework in Python." In International Conference on the Applications of Evolutionary Computation (Part of EvoStar), pp. 20-36. Springer, Cham, 2020.
 - Ruba Abu Khurma, Ibrahim Aljarah, Ahmad Sharieh, and Seyedali Mirjalili. Evolopy-fs: An open-source nature-inspired optimization framework in python for feature selection. In Evolutionary Machine Learning Techniques, pages 131–173. Springer, 2020
