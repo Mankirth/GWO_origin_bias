@@ -19,6 +19,8 @@ import EvoloPy.optimizers.HHO as hho
 import EvoloPy.optimizers.SCA as sca
 import EvoloPy.optimizers.JAYA as jaya
 import EvoloPy.optimizers.DE as de
+import EvoloPy.optimizers.GWO_modified_v1 as gwo_modified_v1
+import EvoloPy.optimizers.GWO_modified_v2 as gwo_modified_v2
 from EvoloPy import benchmarks
 import csv
 import numpy
@@ -65,6 +67,10 @@ def selector(algo, func_details, popSize, Iter):
         x = jaya.JAYA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "DE":
         x = de.DE(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+    elif algo == "GWO_modified_v1":
+        x = gwo_modified_v1.GWO_modified_v1(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+    elif algo == "GWO_modified_v2":
+        x = gwo_modified_v2.GWO_modified_v2(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     else:
         return None
     return x
@@ -125,12 +131,25 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
         for j in range(0, len(objectivefunc)):
             convergence = [0] * NumOfRuns
             executionTime = [0] * NumOfRuns
+            # centroid_all_data = [0] * NumOfRuns  
+            # centroid_leaders_data = [0] * NumOfRuns  
+            centroid_all_distance_data = [0] * NumOfRuns  
+            centroid_leaders_distance_data = [0] * NumOfRuns  
+            # movement_vectors = [0] * NumOfRuns
+
             for k in range(0, NumOfRuns):
                 func_details = benchmarks.getFunctionDetails(objectivefunc[j])
                 x = selector(optimizer[i], func_details, PopulationSize, Iterations)
                 convergence[k] = x.convergence
                 optimizerName = x.optimizer
                 objfname = x.objfname
+
+                # centroid_all_data[k] = x.centroid_all
+                # centroid_leaders_data[k] = x.centroid_leaders
+                centroid_all_distance_data[k] = x.centroid_all_distance
+                centroid_leaders_distance_data[k] = x.centroid_leaders_distance
+                # movement_vectors[k] = x.movement_vectors
+
                 if Export_details == True:
                     ExportToFile = results_directory + "experiment_details.csv"
                     with open(ExportToFile, "a", newline="\n") as out:
@@ -147,6 +166,37 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
                         a = numpy.array([x.optimizer, x.objfname, x.executionTime, x.bestIndividual] + x.convergence.tolist(), dtype=object)
                         writer.writerow(a)
                     out.close()
+                    
+            
+            #average centorid
+            if Export_details and NumOfRuns > 0:
+
+                # avg_centroid_all = numpy.mean(numpy.array(centroid_all_data), axis=0)
+                # avg_centroid_leaders =  numpy.mean(numpy.array(centroid_leaders_data), axis=0)
+                avg_centroid_all_distance =  numpy.mean(numpy.array(centroid_all_distance_data), axis=0)
+                avg_centroid_leaders_distance =  numpy.mean(numpy.array(centroid_leaders_distance_data), axis=0)
+
+                avg_centroid_filename = results_directory + f"avg_centroid_details_{optimizer[i]}_{objectivefunc[j]}.csv"
+                with open(avg_centroid_filename, "w", newline="\n") as avg_file:
+                    writer = csv.writer(avg_file)
+                    writer.writerow(["Iteration", "Avg_Centroid_All_Distance", "Avg_Centroid_Leaders_Distance"])
+                    for iter_num in range(len(avg_centroid_all_distance)):
+                        writer.writerow([
+                            (iter_num+1),
+                            float(avg_centroid_all_distance[iter_num]),  
+                            float(avg_centroid_leaders_distance[iter_num]),  
+                            # list(avg_centroid_all[iter_num]), 
+                            # list(avg_centroid_leaders[iter_num]), 
+                        ])
+
+            # if Export_details == True:
+            #     movement_vectors_filename = results_directory + f"movement_vectors_{optimizer[i]}_{objectivefunc[j]}_run{k+1}.csv"
+            #     with open(movement_vectors_filename, "w", newline="\n") as mv_file:
+            #         writer = csv.writer(mv_file)
+            #         writer.writerow(["Iteration", "Movement_Vector"])
+
+            #         for iter_num, vector in enumerate(x.movement_vectors, 1):  
+            #             writer.writerow([iter_num, list(vector)])  
 
             if Export == True:
                 ExportToFile = results_directory + "experiment.csv"
