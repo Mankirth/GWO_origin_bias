@@ -329,6 +329,12 @@ def F23(L):
     o = fit.item(0)
     return o
 
+def F24(x, shift=0):
+    shifted_x = x - shift
+    dim = len(shifted_x)
+    o = np.sum(shifted_x ** 2 - 10 * np.cos(2 * math.pi * shifted_x)) + 10 * dim
+    return o
+
 # Ackley function (commonly used in optimization)
 def ackley(x):
     a = 20
@@ -380,6 +386,7 @@ def getFunctionDetails(a):
         "F21": ["F21", 0, 10, 4],
         "F22": ["F22", 0, 10, 4],
         "F23": ["F23", 0, 10, 4],
+        "F24": ["F24", -0.12, 10.12, 30], #can change the dimension 
         "ackley": ["ackley", -32.768, 32.768, 30],  # Ackley function
         "rosenbrock": ["rosenbrock", -5, 10, 30],  # Rosenbrock function
         "rastrigin": ["rastrigin", -5.12, 5.12, 30],  # Rastrigin function
