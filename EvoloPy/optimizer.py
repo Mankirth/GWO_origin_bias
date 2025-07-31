@@ -19,8 +19,7 @@ import EvoloPy.optimizers.HHO as hho
 import EvoloPy.optimizers.SCA as sca
 import EvoloPy.optimizers.JAYA as jaya
 import EvoloPy.optimizers.DE as de
-import EvoloPy.optimizers.GWO_modified_v1 as gwo_modified_v1
-import EvoloPy.optimizers.GWO_modified_v2 as gwo_modified_v2
+import EvoloPy.optimizers.GWO_epsilon as gwo_epsilon
 from EvoloPy import benchmarks
 import csv
 import numpy
@@ -67,10 +66,8 @@ def selector(algo, func_details, popSize, Iter):
         x = jaya.JAYA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "DE":
         x = de.DE(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
-    elif algo == "GWO_modified_v1":
-        x = gwo_modified_v1.GWO_modified_v1(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
-    elif algo == "GWO_modified_v2":
-        x = gwo_modified_v2.GWO_modified_v2(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+    elif algo == "GWO_epsilon":
+        x = gwo_epsilon.GWO_epsilon(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     else:
         return None
     return x
