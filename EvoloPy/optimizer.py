@@ -20,7 +20,8 @@ import EvoloPy.optimizers.SCA as sca
 import EvoloPy.optimizers.JAYA as jaya
 import EvoloPy.optimizers.DE as de
 import EvoloPy.optimizers.GWO_epsilon as gwo_epsilon
-from EvoloPy import benchmarks
+import EvoloPy.optimizers.GWO_modified as gwo_modified
+from EvoloPy import CEC2022 as benchmarks
 import csv
 import numpy
 import time
