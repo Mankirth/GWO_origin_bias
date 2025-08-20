@@ -9,7 +9,6 @@
 ## Reference
 
 Faris, Hossam, Ibrahim Aljarah, Seyedali Mirjalili, Pedro A. Castillo, and Juan Julián Merelo Guervós. "EvoloPy: An Open-source Nature-inspired Optimization Framework in Python." In IJCCI (ECTA), pp. 171-177. 2016.
-https://www.scitepress.org/Papers/2016/60482/60482.pdf
 
 Luo K. et al. (2019) Enhanced grey wolf optimizer with a model for dynamically estimating the location of the prey. Applied Soft Computing, 77, 225-235.
 
