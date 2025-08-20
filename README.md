@@ -4,7 +4,7 @@
 ## Features
 - You can find GWO_epsilon inspired by Luo's paper in the optimizer directory.
 - You can find GWO_modified in the optimizer directory, which includes restart, reflect and shift mechanism.
-- Test function uses CEC2022 in default. You can change it to benchmarks.py by import benchmarks in optimizer.py.
+- Test function uses CEC2022 by default. You can change it to benchmarks.py by import benchmarks in optimizer.py.
 
 ## Reference
 
