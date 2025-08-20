@@ -6,6 +6,12 @@
 - You can find GWO_modified in the optimizer directory, which includes restart, reflect and shift mechanism.
 - Test function uses CEC2022 by default. You can change it to benchmarks.py by import benchmarks in optimizer.py.
 
+## How to run?
+
+```
+python examples/example.py
+```
+
 ## Reference
 
 Faris, Hossam, Ibrahim Aljarah, Seyedali Mirjalili, Pedro A. Castillo, and Juan Julián Merelo Guervós. "EvoloPy: An Open-source Nature-inspired Optimization Framework in Python." In IJCCI (ECTA), pp. 171-177. 2016.
