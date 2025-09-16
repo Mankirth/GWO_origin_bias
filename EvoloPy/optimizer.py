@@ -21,7 +21,7 @@ import EvoloPy.optimizers.JAYA as jaya
 import EvoloPy.optimizers.DE as de
 import EvoloPy.optimizers.GWO_epsilon as gwo_epsilon
 import EvoloPy.optimizers.GWO_modified as gwo_modified
-from EvoloPy import CEC2022 as benchmarks
+from EvoloPy import benchmarks as benchmarks
 import csv
 import numpy
 import time
@@ -69,6 +69,8 @@ def selector(algo, func_details, popSize, Iter):
         x = de.DE(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "GWO_epsilon":
         x = gwo_epsilon.GWO_epsilon(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+    elif algo == "GWO_modified":
+        x = gwo_modified.GWO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     else:
         return None
     return x

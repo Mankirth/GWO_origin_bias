@@ -211,8 +211,8 @@ def levy_func(x, nx, Os, Mr, s_flag, r_flag):
   w = [1]*nx
 
   for i in range(nx):
-	   w[i] = 1.0 + (z[i] - 0.0)/4.0
-  
+    w[i] = 1.0 + (z[i] - 0.0)/4.0
+
   term1 = pow((np.sin(PI*w[0])),2)
   term3 = pow((w[nx-1]-1),2) * (1+pow((np.sin(2*PI*w[nx-1])),2))
 
@@ -226,6 +226,7 @@ def levy_func(x, nx, Os, Mr, s_flag, r_flag):
   del(w)
   return f
 
+#Was commented out
 def zakharov_func(x, nx, Os, Mr, s_flag, r_flag):
   z = sr_func (x, nx, Os, Mr,1.0, s_flag, r_flag)
   f = 0.0
@@ -724,6 +725,18 @@ def getFunctionDetails(a):
         "F10": ["F10", -100, 100, 10],
         "F11": ["F11", -100, 100, 10],
         "F12": ["F12", -100, 100, 10],
+        "F13": ["F13", -100, 100, 10],
+        "F14": ["F14", -100, 100, 10],
+        "F15": ["F15", -100, 100, 10],
+        "F16": ["F16", -100, 100, 10],
+        "F17": ["F17", -100, 100, 10],
+        "F18": ["F18", -100, 100, 10],
+        "F19": ["F19", -100, 100, 10],
+        "F20": ["F20", -100, 100, 10],
+        "F21": ["F21", -100, 100, 10],
+        "F22": ["F22", -100, 100, 10],
+        "F23": ["F23", -100, 100, 10],
+        "F24": ["F24", -100, 100, 10],
     }
     return param.get(a, "nothing")
 
@@ -762,3 +775,39 @@ def F11(x):
 
 def F12(x):
     return cec2022_func(12).values(x).ObjFunc
+
+def F13(x):
+    return cec2022_func(13).values(x).ObjFunc
+
+def F14(x):
+    return cec2022_func(14).values(x).ObjFunc
+
+def F15(x):
+    return cec2022_func(15).values(x).ObjFunc
+
+def F16(x):
+    return cec2022_func(16).values(x).ObjFunc
+
+def F17(x):
+    return cec2022_func(17).values(x).ObjFunc
+
+def F18(x):
+    return cec2022_func(18).values(x).ObjFunc
+
+def F19(x):
+    return cec2022_func(19).values(x).ObjFunc
+
+def F20(x):
+    return cec2022_func(20).values(x).ObjFunc
+
+def F21(x):
+    return cec2022_func(21).values(x).ObjFunc
+
+def F22(x):
+    return cec2022_func(22).values(x).ObjFunc
+
+def F23(x):
+    return cec2022_func(23).values(x).ObjFunc
+
+def F24(x):
+    return cec2022_func(24).values(x).ObjFunc
