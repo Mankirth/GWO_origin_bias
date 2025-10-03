@@ -10,21 +10,44 @@ for j in range(0, 1):
     # Box Plot
     data = []
 
-    for i in range(6):
-        fileResultsDetailsData = pd.read_csv("Test Results\\GWOM Shrunken Rastrigin Bias Tests\\30x75x4000 " + str(-i) + "\\experiment_details.csv")
-        objective_name = "rastrigin"
-        optimizer_name = "GWO_modified"
+    fileResultsDetailsData = pd.read_csv("Test Results\\GWO Rastrigin Bias Tests\\30x75x4000 -5\\experiment_details.csv")
+    objective_name = "rastrigin"
+    optimizer_name = "GWO"
 
-        detailedData = fileResultsDetailsData[
-            (fileResultsDetailsData["Optimizer"] == optimizer_name)
-            & (fileResultsDetailsData["objfname"] == objective_name)
-        ]
-        detailedData = detailedData["Iter" + str(4000)]
-        detailedData = np.array(detailedData).T.tolist()
-        data.append(detailedData)
+    detailedData = fileResultsDetailsData[
+        (fileResultsDetailsData["Optimizer"] == optimizer_name)
+        & (fileResultsDetailsData["objfname"] == objective_name)
+    ]
+    detailedData = detailedData["Iter" + str(4000)]
+    detailedData = np.array(detailedData).T.tolist()
+    data.append(detailedData)
+
+    fileResultsDetailsData = pd.read_csv("Test Results\\GWOM Rastrigin Bias Tests\\30x75x4000 -5\\experiment_details.csv")
+    objective_name = "rastrigin"
+    optimizer_name = "GWO_modified"
+
+    detailedData = fileResultsDetailsData[
+        (fileResultsDetailsData["Optimizer"] == optimizer_name)
+        & (fileResultsDetailsData["objfname"] == objective_name)
+    ]
+    detailedData = detailedData["Iter" + str(4000)]
+    detailedData = np.array(detailedData).T.tolist()
+    data.append(detailedData)
+
+    fileResultsDetailsData = pd.read_csv("Test Results\\GWOM Shrunken Rastrigin Bias Tests\\30x75x4000 -5\\experiment_details.csv")
+    objective_name = "rastrigin"
+    optimizer_name = "GWO_modified"
+
+    detailedData = fileResultsDetailsData[
+        (fileResultsDetailsData["Optimizer"] == optimizer_name)
+        & (fileResultsDetailsData["objfname"] == objective_name)
+    ]
+    detailedData = detailedData["Iter" + str(4000)]
+    detailedData = np.array(detailedData).T.tolist()
+    data.append(detailedData)
 
     # , notch=True
-    box = plt.boxplot(data, patch_artist=True, labels=["No Shift", "-1", "-2", "-3", "-4", "-5"])
+    box = plt.boxplot(data, patch_artist=True, labels=["GWO", "GWO Modified", "Shrunk"])
 
     colors = [
         "#5c9eb7",
@@ -44,16 +67,15 @@ for j in range(0, 1):
     for patch, color in zip(box["boxes"], colors):
         patch.set_facecolor(color)
 
-    plt.title("GWO Modified W/ Shrunken Search Space Function Shifts")
-    plt.xlabel("Function Shift")
+    plt.title("GWO -5 Function Shift Comparison")
     plt.ylabel("Fitness")
     plt.legend(
         handles=box["boxes"],
-        labels=["No Shift", "-1", "-2", "-3", "-4", "-5"],
+        labels=["GWO", "GWO Modified", "Shrunk"],
         loc="upper right",
         bbox_to_anchor=(1.2, 1.02),
     )
-    fig_name = "Test Results\\GWOM Shrunken Rastrigin Bias Tests\\" + "/boxplot-" + "function_shifts" + ".png"
+    fig_name = "Test Results\\Rastrigin Function Shift Comparison\\" + "/boxplot-" + "function_shifts -5" + ".png"
     plt.savefig(fig_name, bbox_inches="tight")
     plt.clf()
     #plt.show()
