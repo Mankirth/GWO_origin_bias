@@ -97,6 +97,8 @@ def GWO_modified(objf, lb, ub, dim, SearchAgents_no, Max_iter):
             
                 # Reinitialize all positions randomly (except alpha)
                 for i in range(dim):
+                    ub[i] += shift_vector[i]
+                    lb[i] += shift_vector[i]
                     if SearchAgents_no > 1:  # Only if we have multiple agents
                         # Keep alpha position at origin
                         Positions[0, :] = numpy.zeros(dim)  # Alpha stays at origin
