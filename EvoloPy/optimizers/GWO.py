@@ -11,6 +11,18 @@ import math
 from EvoloPy.solution import solution
 import time
 
+def reflect(value, lower_bound, upper_bound):
+
+    if lower_bound >= upper_bound:
+        return lower_bound  
+    
+    range_size = upper_bound - lower_bound
+    
+    normalized = (value - lower_bound) % (2 * range_size)
+    
+    if normalized > range_size:
+        return upper_bound - (normalized - range_size)
+    return lower_bound + normalized
 
 def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter):
 
@@ -56,7 +68,9 @@ def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter):
 
             # Return back the search agents that go beyond the boundaries of the search space
             for j in range(dim):
-                Positions[i, j] = numpy.clip(Positions[i, j], lb[j], ub[j])
+                #Positions[i, j] = numpy.clip(Positions[i, j], lb[j], ub[j])
+                Positions[i, j] = reflect(Positions[i, j], lb[j], ub[j])
+
 
             # Calculate objective function for each search agent
             fitness = objf(Positions[i, :])

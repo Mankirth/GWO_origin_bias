@@ -21,6 +21,7 @@ import EvoloPy.optimizers.JAYA as jaya
 import EvoloPy.optimizers.DE as de
 import EvoloPy.optimizers.GWO_epsilon as gwo_epsilon
 import EvoloPy.optimizers.GWO_modified as gwo_modified
+import EvoloPy.optimizers.GWO_modified_shrunk as gwo_modified_shrunk
 from EvoloPy import benchmarks as benchmarks
 import csv
 import numpy
@@ -71,6 +72,8 @@ def selector(algo, func_details, popSize, Iter):
         x = gwo_epsilon.GWO_epsilon(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "GWO_modified":
         x = gwo_modified.GWO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+    elif algo == "GWO_modified_shrunk":
+        x = gwo_modified_shrunk.GWO_modified_shrunk(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     else:
         return None
     return x
