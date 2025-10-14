@@ -390,7 +390,7 @@ def getFunctionDetails(a):
         "F24": ["F24", -0.12, 10.12, 30], #can change the dimension 
         "ackley": ["ackley", -32.768, 32.768, 30],  # Ackley function
         "rosenbrock": ["rosenbrock", -5, 10, 30],  # Rosenbrock function
-        "rastrigin": ["rastrigin", -5.12, 5.12, 30],  # Rastrigin function
+        "rastrigin": ["rastrigin", -2.12, 2.12, 30],  # Rastrigin function
         "griewank": ["griewank", -600, 600, 30],  # Griewank function
     }
     return param.get(a, "nothing")
