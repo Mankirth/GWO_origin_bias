@@ -352,7 +352,7 @@ def rosenbrock(x):
 # Rastrigin function (tests local minima avoidance)
 def rastrigin(x):
     A = 10
-    y = x - 1
+    y = x - 5
     return A * len(y) + np.sum(y**2 - A * np.cos(2 * np.pi * y))
 
 # Griewank function (tests exploration)

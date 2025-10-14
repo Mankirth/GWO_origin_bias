@@ -52,8 +52,8 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter):
         
         for i in range(dim):
             Positions[:, i] = numpy.random.uniform(0, 1, SearchAgents_no) * (ub[i] - lb[i]) + lb[i]
-        # if(t != 0):
-        #     Positions[0, :] = total_shift
+        #if(t != 0):
+        Positions[0, :] = total_shift
 
         print('GWO_modified_shrunk is optimizing "' + objf.__name__ + '", ' + 'Reset no.' + str(t + 1))
 
