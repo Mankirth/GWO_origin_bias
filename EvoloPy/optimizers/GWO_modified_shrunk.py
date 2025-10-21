@@ -51,7 +51,7 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter):
         Delta_score = float("inf")
         
         for i in range(dim):
-            Positions[:, i] = numpy.random.uniform(0, 1, SearchAgents_no) * (ub[i] - lb[i]) + lb[i]
+            Positions[:, i] = numpy.random.uniform(0, 1, SearchAgents_no) * (ub[i] - lb[i]) + lb[i] - total_shift[i]
         #if(t != 0):
         Positions[0, :] = total_shift
 
@@ -64,7 +64,7 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter):
             for i in range(0, SearchAgents_no):
                 # Apply reflection with current shift
                 for j in range(dim):
-                    Positions[i, j] = reflect(Positions[i, j], lb[j] - total_shift[j], ub[j] - total_shift[j])
+                    Positions[i, j] = reflect(Positions[i, j], lb[j], ub[j])
 
                 # Evaluate in original space
                 fitness = objf(Positions[i, :] + total_shift)
@@ -96,12 +96,12 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter):
                 shift_vector = Alpha_pos.copy()
                 # Update total shift
                 if numpy.linalg.norm(shift_vector) > 0.05 * numpy.linalg.norm(numpy.array(ub)-numpy.array(lb)):
-                    total_shift += Alpha_pos
+                    total_shift += shift_vector
                     Alpha_pos -= shift_vector
                     Beta_pos -= shift_vector
                     Delta_pos -= shift_vector
-                    ub += shift_vector
-                    lb += shift_vector
+                    #ub += shift_vector
+                    #lb += shift_vector
                 
                     # Reinitialize all positions randomly (except alpha)
                     for i in range(dim):
@@ -109,7 +109,7 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter):
                             # Keep alpha position at origin
                             Positions[0, :] = total_shift  # Alpha stays at origin
                             # Randomize other positions
-                            Positions[1:, i] = numpy.random.uniform(0, 1, SearchAgents_no-1) * (ub[i] - lb[i]) + lb[i] - total_shift[i]
+                            Positions[1:, i] = numpy.random.uniform(0, 1, SearchAgents_no-1) * (ub[i] - lb[i]) + lb[i]# - total_shift[i]
 
 
             # Standard GWO update
@@ -137,7 +137,7 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter):
             Convergence_curve[l + (t * Reset_iter)] = actual_best_score
 
             if l % 1 == 0:
-                print(f"Iteration {l + (t * Reset_iter)}: best fitness = {actual_best_score}" + ', ub:' + str(ub[0]) + ", lb:" + str(lb[0]))
+                print(f"Iteration {l + (t * Reset_iter)}: best fitness = {actual_best_score}" + ', ub:' + str(ub[0] + total_shift[0]) + ", lb:" + str(lb[0] + total_shift[0]))
 
     timerEnd = time.time()
     s.endTime = time.strftime("%Y-%m-%d-%H-%M-%S")

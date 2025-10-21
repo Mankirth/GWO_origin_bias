@@ -68,8 +68,8 @@ def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter):
 
             # Return back the search agents that go beyond the boundaries of the search space
             for j in range(dim):
-                #Positions[i, j] = numpy.clip(Positions[i, j], lb[j], ub[j])
-                Positions[i, j] = reflect(Positions[i, j], lb[j], ub[j])
+                Positions[i, j] = numpy.clip(Positions[i, j], lb[j], ub[j])
+                #Positions[i, j] = reflect(Positions[i, j], lb[j], ub[j])
 
 
             # Calculate objective function for each search agent
