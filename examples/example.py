@@ -29,7 +29,7 @@ objectivefunc = ["rastrigin"]
 NumOfRuns = 30
 
 # Select general parameters for all optimizers (population size, number of iterations) ....
-params = {"PopulationSize": 75, "Iterations": 4000, "OriginShift": 0, "SearchShift": -2}
+params = {"PopulationSize": 50, "Iterations": 6000, "OriginShift": -1, "SearchShift": 0}
 
 # Choose whether to Export the results in different formats
 export_flags = {
