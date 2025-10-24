@@ -64,7 +64,7 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter):
             for i in range(0, SearchAgents_no):
                 # Apply reflection with current shift
                 for j in range(dim):
-                    Positions[i, j] = reflect(Positions[i, j], lb[j], ub[j])
+                    Positions[i, j] = reflect(Positions[i, j], lb[j] - total_shift[j], ub[j] - total_shift[j])
 
                 # Evaluate in original space
                 fitness = objf(Positions[i, :] + total_shift)
@@ -96,7 +96,7 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter):
                 shift_vector = Alpha_pos.copy()
                 # Update total shift
                 if numpy.linalg.norm(shift_vector) > 0.05 * numpy.linalg.norm(numpy.array(ub)-numpy.array(lb)):
-                    total_shift += shift_vector
+                    total_shift += Alpha_pos
                     Alpha_pos -= shift_vector
                     Beta_pos -= shift_vector
                     Delta_pos -= shift_vector
@@ -109,7 +109,7 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter):
                             # Keep alpha position at origin
                             Positions[0, :] = total_shift  # Alpha stays at origin
                             # Randomize other positions
-                            Positions[1:, i] = numpy.random.uniform(0, 1, SearchAgents_no-1) * (ub[i] - lb[i]) + lb[i]# - total_shift[i]
+                            Positions[1:, i] = numpy.random.uniform(0, 1, SearchAgents_no-1) * (ub[i] - lb[i]) + lb[i] - total_shift[i]
 
 
             # Standard GWO update
