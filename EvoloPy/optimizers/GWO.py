@@ -24,7 +24,7 @@ def reflect(value, lower_bound, upper_bound):
         return upper_bound - (normalized - range_size)
     return lower_bound + normalized
 
-def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter):
+def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift):
 
     # Max_iter=1000
     # lb=-100
@@ -73,7 +73,7 @@ def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter):
 
 
             # Calculate objective function for each search agent
-            fitness = objf(Positions[i, :])
+            fitness = objf(Positions[i, :] + OriginShift)
 
             # Update Alpha, Beta, and Delta
             if fitness < Alpha_score:

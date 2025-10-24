@@ -22,7 +22,7 @@ def reflect(value, lower_bound, upper_bound):
         return upper_bound - (normalized - range_size)
     return lower_bound + normalized
 
-def GWO_modified(objf, lb, ub, dim, SearchAgents_no, Max_iter):
+def GWO_modified(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift):
     # Initialize alpha, beta, and delta_pos
     Alpha_pos = numpy.zeros(dim)
     Alpha_score = float("inf")
@@ -63,7 +63,7 @@ def GWO_modified(objf, lb, ub, dim, SearchAgents_no, Max_iter):
                 Positions[i, j] = reflect(Positions[i, j], lb[j] - total_shift[j], ub[j] - total_shift[j])
 
             # Evaluate in original space
-            fitness = objf(Positions[i, :] + total_shift)
+            fitness = objf(Positions[i, :] + OriginShift + total_shift)
 
             # Update leaders
             if fitness < Alpha_score:

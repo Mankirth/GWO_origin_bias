@@ -22,7 +22,7 @@ def reflect(value, lower_bound, upper_bound):
         return upper_bound - (normalized - range_size)
     return lower_bound + normalized
 
-def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter):
+def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift):
     Reset_iter = int(Max_iter / 5)
 
     Convergence_curve = numpy.zeros(Max_iter)
@@ -67,7 +67,7 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter):
                     Positions[i, j] = reflect(Positions[i, j], lb[j], ub[j])
 
                 # Evaluate in original space
-                fitness = objf(Positions[i, :] + total_shift)
+                fitness = objf(Positions[i, :] + OriginShift + total_shift)
 
                 # Update leaders
                 if fitness < Alpha_score:

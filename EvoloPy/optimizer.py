@@ -34,7 +34,7 @@ from EvoloPy import plot_boxplot
 warnings.simplefilter(action="ignore")
 
 
-def selector(algo, func_details, popSize, Iter):
+def selector(algo, func_details, popSize, Iter, OriginShift):
     function_name = func_details[0]
     lb = func_details[1]
     ub = func_details[2]
@@ -43,7 +43,7 @@ def selector(algo, func_details, popSize, Iter):
     if algo == "SSA":
         x = ssa.SSA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "PSO":
-        x = pso.PSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+        x = pso.PSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift)
     elif algo == "GA":
         x = ga.GA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "BAT":
@@ -51,7 +51,7 @@ def selector(algo, func_details, popSize, Iter):
     elif algo == "FFA":
         x = ffa.FFA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "GWO":
-        x = gwo.GWO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+        x = gwo.GWO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift)
     elif algo == "WOA":
         x = woa.WOA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "MVO":
@@ -69,11 +69,11 @@ def selector(algo, func_details, popSize, Iter):
     elif algo == "DE":
         x = de.DE(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "GWO_epsilon":
-        x = gwo_epsilon.GWO_epsilon(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+        x = gwo_epsilon.GWO_epsilon(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift)
     elif algo == "GWO_modified":
-        x = gwo_modified.GWO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+        x = gwo_modified.GWO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift)
     elif algo == "GWO_modified_shrunk":
-        x = gwo_modified_shrunk.GWO_modified_shrunk(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+        x = gwo_modified_shrunk.GWO_modified_shrunk(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift)
     else:
         return None
     return x
@@ -96,6 +96,8 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
         The set of parameters which are:
         1. Size of population (PopulationSize)
         2. The number of iterations (Iterations)
+        3. Origin Shift (OriginShift)
+        4. Search Space Shift (SearchShift)
     export_flags : set
         The set of Boolean flags which are:
         1. Export (Exporting the results in a file)
@@ -111,6 +113,8 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
     # Select general parameters for all optimizers (population size, number of iterations) ....
     PopulationSize = params["PopulationSize"]
     Iterations = params["Iterations"]
+    OriginShift = params["OriginShift"]
+    SearchShift = params["SearchShift"]
 
     # Export results ?
     Export = export_flags["Export_avg"]
@@ -142,7 +146,9 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
 
             for k in range(0, NumOfRuns):
                 func_details = benchmarks.getFunctionDetails(objectivefunc[j])
-                x = selector(optimizer[i], func_details, PopulationSize, Iterations)
+                func_details[1] += SearchShift
+                func_details[2] += SearchShift
+                x = selector(optimizer[i], func_details, PopulationSize, Iterations, OriginShift)
                 convergence[k] = x.convergence
                 optimizerName = x.optimizer
                 objfname = x.objfname
