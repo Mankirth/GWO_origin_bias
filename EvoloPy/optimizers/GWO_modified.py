@@ -94,16 +94,16 @@ def GWO_modified(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift):
                 Alpha_pos -= shift_vector
                 Beta_pos -= shift_vector
                 Delta_pos -= shift_vector
-                ub += shift_vector
-                lb += shift_vector
+
+                Positions = numpy.subtract(Positions, [shift_vector] * SearchAgents_no)
             
                 # Reinitialize all positions randomly (except alpha)
-                for i in range(dim):
-                    if SearchAgents_no > 1:  # Only if we have multiple agents
-                        # Keep alpha position at origin
-                        Positions[0, :] = numpy.zeros(dim)  # Alpha stays at origin
-                        # Randomize other positions
-                        Positions[1:, i] = numpy.random.uniform(0, 1, SearchAgents_no-1) * (ub[i] - lb[i]) + lb[i] - total_shift[i]
+                # for i in range(dim):
+                #     if SearchAgents_no > 1:  # Only if we have multiple agents
+                #         # Keep alpha position at origin
+                #         Positions[0, :] = numpy.zeros(dim)  # Alpha stays at origin
+                #         # Randomize other positions
+                #         Positions[1:, i] = numpy.random.uniform(0, 1, SearchAgents_no-1) * (ub[i] - lb[i]) + lb[i] - total_shift[i]
 
 
         # Standard GWO update
