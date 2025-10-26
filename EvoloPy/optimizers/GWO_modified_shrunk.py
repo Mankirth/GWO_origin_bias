@@ -24,16 +24,20 @@ def reflect(value, lower_bound, upper_bound):
 
 def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift):
     Reset_iter = int(Max_iter / 5)
+    searchWidth = ub * 0.4
+    originalUb = ub
+    originalLb = lb
 
     Convergence_curve = numpy.zeros(Max_iter)
     s = solution()
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
     if not isinstance(lb, list):
-        lb = [lb] * dim
+        lb = [-searchWidth] * dim
     if not isinstance(ub, list):
-        ub = [ub] * dim
+        ub = [searchWidth] * dim
     total_shift = [0] * dim
+
     # Initialize positions
     Positions = numpy.zeros((SearchAgents_no, dim))
     actual_best_score = float("inf")
@@ -41,19 +45,22 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShif
     for t in range(5):
         # Initialize alpha, beta, and delta_pos
 
-        Alpha_pos = total_shift
+        Alpha_pos = numpy.zeros((SearchAgents_no, dim))
         Alpha_score = float("inf")
 
-        Beta_pos = total_shift
+        Beta_pos = numpy.zeros((SearchAgents_no, dim))
         Beta_score = float("inf")
 
-        Delta_pos = total_shift
+        Delta_pos = numpy.zeros((SearchAgents_no, dim))
         Delta_score = float("inf")
+
+        if(t != 0):
+            for i in range(dim):
+                total_shift[i] = numpy.random.uniform(originalLb, originalUb)
         
         for i in range(dim):
-            Positions[:, i] = numpy.random.uniform(0, 1, SearchAgents_no) * (ub[i] - lb[i]) + lb[i] - total_shift[i]
-        #if(t != 0):
-        Positions[0, :] = total_shift
+            Positions[:, i] = numpy.random.uniform(0, 1, SearchAgents_no) * (ub[i] - lb[i]) + lb[i]
+
 
         print('GWO_modified_shrunk is optimizing "' + objf.__name__ + '", ' + 'Reset no.' + str(t + 1))
 
@@ -64,7 +71,7 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShif
             for i in range(0, SearchAgents_no):
                 # Apply reflection with current shift
                 for j in range(dim):
-                    Positions[i, j] = reflect(Positions[i, j], lb[j] - total_shift[j], ub[j] - total_shift[j])
+                    Positions[i, j] = reflect(Positions[i, j], originalLb - total_shift[j], originalUb - total_shift[j])
 
                 # Evaluate in original space
                 fitness = objf(Positions[i, :] + OriginShift + total_shift)
@@ -100,16 +107,14 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShif
                     Alpha_pos -= shift_vector
                     Beta_pos -= shift_vector
                     Delta_pos -= shift_vector
-                    #ub += shift_vector
-                    #lb += shift_vector
                 
                     # Reinitialize all positions randomly (except alpha)
                     for i in range(dim):
                         if SearchAgents_no > 1:  # Only if we have multiple agents
                             # Keep alpha position at origin
-                            Positions[0, :] = total_shift  # Alpha stays at origin
+                            Positions[0, :] = numpy.zeros(dim) # Alpha stays at origin
                             # Randomize other positions
-                            Positions[1:, i] = numpy.random.uniform(0, 1, SearchAgents_no-1) * (ub[i] - lb[i]) + lb[i] - total_shift[i]
+                            Positions[1:, i] = numpy.random.uniform(0, 1, SearchAgents_no-1) * (ub[i] - lb[i]) + lb[i]
 
 
             # Standard GWO update
@@ -137,7 +142,7 @@ def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShif
             Convergence_curve[l + (t * Reset_iter)] = actual_best_score
 
             if l % 1 == 0:
-                print(f"Iteration {l + (t * Reset_iter)}: best fitness = {actual_best_score}" + ', ub:' + str(ub[0] + total_shift[0]) + ", lb:" + str(lb[0] + total_shift[0]))
+                print(f"Iteration {l + (t * Reset_iter)}: best fitness = {actual_best_score}" + ', ub:' + str(numpy.clip(ub[0] + total_shift[0], originalLb, originalUb)) + ", lb:" + str(numpy.clip(lb[0] + total_shift[0], originalLb, originalUb)))
 
     timerEnd = time.time()
     s.endTime = time.strftime("%Y-%m-%d-%H-%M-%S")

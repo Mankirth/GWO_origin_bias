@@ -94,8 +94,6 @@ def GWO_modified(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift):
                 Alpha_pos -= shift_vector
                 Beta_pos -= shift_vector
                 Delta_pos -= shift_vector
-                ub += shift_vector
-                lb += shift_vector
             
                 # Reinitialize all positions randomly (except alpha)
                 for i in range(dim):
