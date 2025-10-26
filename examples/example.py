@@ -17,7 +17,7 @@ from EvoloPy.optimizer import run
 
 # Select optimizers
 # "SSA","PSO","GA","BAT","FFA","GWO","WOA","MVO","MFO","CS","HHO","SCA","JAYA","DE"
-optimizer = ["GWO_modified"]
+optimizer = ["GWO_modified_shrunk"]
 
 # Select benchmark function"
 # "F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15","F16","F17","F18","F19","F20","F21","F22","F23","F24"
@@ -29,7 +29,7 @@ objectivefunc = ["rastrigin"]
 NumOfRuns = 30
 
 # Select general parameters for all optimizers (population size, number of iterations) ....
-params = {"PopulationSize": 50, "Iterations": 6000, "OriginShift": 0, "SearchShift": 3}
+params = {"PopulationSize": 50, "Iterations": 6000, "OriginShift": -5, "SearchShift": 0}
 
 # Choose whether to Export the results in different formats
 export_flags = {
