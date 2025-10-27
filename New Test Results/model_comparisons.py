@@ -9,7 +9,7 @@ for j in range(0, 6):
     # Box Plot
     data = []
 
-    fileResultsDetailsData = pd.read_csv("New Test Results\\GWO\\30x75x4000 " + str(-j) + "\\experiment_details.csv")
+    fileResultsDetailsData = pd.read_csv("Tests 30x50x6000\\GWO\\Origin Shift\\GWO " + str(-j) + "\\experiment_details.csv")
     objective_name = "rastrigin"
     optimizer_name = "GWO"
     detailedData = fileResultsDetailsData[
@@ -20,7 +20,7 @@ for j in range(0, 6):
     detailedData = np.array(detailedData).T.tolist()
     data.append(detailedData)
 
-    fileResultsDetailsData = pd.read_csv("New Test Results\\GWOM\\30x75x4000 " + str(-j) + "\\experiment_details.csv")
+    fileResultsDetailsData = pd.read_csv("Tests 30x50x6000\\GWOM\\Origin Shift\\GWOM " + str(-j) + "\\experiment_details.csv")
     objective_name = "rastrigin"
     optimizer_name = "GWO_modified"
     detailedData = fileResultsDetailsData[
@@ -31,7 +31,18 @@ for j in range(0, 6):
     detailedData = np.array(detailedData).T.tolist()
     data.append(detailedData)
 
-    fileResultsDetailsData = pd.read_csv("New Test Results\\GWOM Shrunk + Restarts\\30x75x4000 " + str(-j) + "\\experiment_details.csv")
+    fileResultsDetailsData = pd.read_csv("Tests 30x50x6000\\GWOM no init\\Origin Shift\\GWOMShift " + str(-j) + "\\experiment_details.csv")
+    objective_name = "rastrigin"
+    optimizer_name = "GWO_modified"
+    detailedData = fileResultsDetailsData[
+        (fileResultsDetailsData["Optimizer"] == optimizer_name)
+        & (fileResultsDetailsData["objfname"] == objective_name)
+    ]
+    detailedData = detailedData["Iter" + str(4000)]
+    detailedData = np.array(detailedData).T.tolist()
+    data.append(detailedData)
+
+    fileResultsDetailsData = pd.read_csv("Tests 30x50x6000\\GWOMSR\\Origin Shift\\GWOMSR " + str(-j) + "\\experiment_details.csv")
     objective_name = "rastrigin"
     optimizer_name = "GWO_modified_shrunk"
     detailedData = fileResultsDetailsData[
@@ -43,7 +54,7 @@ for j in range(0, 6):
     data.append(detailedData)
 
     # , notch=True
-    box = plt.boxplot(data, patch_artist=True, labels=["GWO", "GWOM", "GWOMSR"])
+    box = plt.boxplot(data, patch_artist=True, labels=["GWO", "GWOM", "GWOM_shift", "GWOMSR"])
 
     colors = [
         "#5c9eb7",
@@ -63,15 +74,19 @@ for j in range(0, 6):
     for patch, color in zip(box["boxes"], colors):
         patch.set_facecolor(color)
 
-    plt.title("GWO Models " + str(-j) + " Function Shift Comparison")
+    if(j == 0):
+        plt.title("GWO Models Comparison (no shifts)")
+    else:
+        plt.title("GWO Models " + str(-j) + " Origin Shift Comparison")
     plt.ylabel("Fitness")
     plt.legend(
         handles=box["boxes"],
-        labels=["GWO", "GWOM", "GWOMSR"],
+        labels=["GWO", "GWOM", "GWOM_shift", "GWOMSR"],
         loc="upper right",
         bbox_to_anchor=(1.2, 1.02),
     )
-    fig_name = "New Test Results\\Model Comparisons Oct.21\\" + "/" + str(-j) + " shift_function_comparison" + ".png"
+    plt.gca().set_ylim([0, 300])
+    fig_name = "Tests 30x50x6000\\" + "/" + str(-j) + " origin_shift_function_comparison" + ".png"
     plt.savefig(fig_name, bbox_inches="tight")
     plt.clf()
     #plt.show()
