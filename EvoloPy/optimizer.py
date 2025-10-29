@@ -69,11 +69,11 @@ def selector(algo, func_details, popSize, Iter, OriginShift, Seed):
     elif algo == "DE":
         x = de.DE(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "GWO_epsilon":
-        x = gwo_epsilon.GWO_epsilon(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift)
+        x = gwo_epsilon.GWO_epsilon(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "GWO_modified":
-        x = gwo_modified.GWO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift)
+        x = gwo_modified.GWO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "GWO_modified_shrunk":
-        x = gwo_modified_shrunk.GWO_modified_shrunk(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift)
+        x = gwo_modified_shrunk.GWO_modified_shrunk(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     else:
         return None
     return x

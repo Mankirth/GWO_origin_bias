@@ -22,7 +22,9 @@ def reflect(value, lower_bound, upper_bound):
         return upper_bound - (normalized - range_size)
     return lower_bound + normalized
 
-def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift):
+def GWO_modified_shrunk(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
+    numpy.random.seed(Seed)
+    random.seed(Seed)
     Reset_iter = int(Max_iter / 5)
     searchWidth = ub * 0.4
     originalUb = ub

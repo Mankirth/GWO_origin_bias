@@ -10,6 +10,8 @@ import numpy
 import math
 from EvoloPy.solution import solution
 import time
+from numpy.random import MT19937
+from numpy.random import RandomState, SeedSequence
 
 def reflect(value, lower_bound, upper_bound):
 
@@ -25,7 +27,8 @@ def reflect(value, lower_bound, upper_bound):
     return lower_bound + normalized
 
 def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
-    numpy.random.seed = Seed
+    numpy.random.seed(Seed)
+    random.seed(Seed)
 
     # Max_iter=1000
     # lb=-100
