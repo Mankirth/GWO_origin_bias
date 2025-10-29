@@ -24,7 +24,8 @@ def reflect(value, lower_bound, upper_bound):
         return upper_bound - (normalized - range_size)
     return lower_bound + normalized
 
-def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift):
+def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
+    numpy.random.seed = Seed
 
     # Max_iter=1000
     # lb=-100

@@ -34,7 +34,7 @@ from EvoloPy import plot_boxplot
 warnings.simplefilter(action="ignore")
 
 
-def selector(algo, func_details, popSize, Iter, OriginShift):
+def selector(algo, func_details, popSize, Iter, OriginShift, Seed):
     function_name = func_details[0]
     lb = func_details[1]
     ub = func_details[2]
@@ -51,7 +51,7 @@ def selector(algo, func_details, popSize, Iter, OriginShift):
     elif algo == "FFA":
         x = ffa.FFA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "GWO":
-        x = gwo.GWO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift)
+        x = gwo.GWO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "WOA":
         x = woa.WOA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "MVO":
@@ -148,7 +148,7 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
                 func_details = benchmarks.getFunctionDetails(objectivefunc[j])
                 func_details[1] += SearchShift
                 func_details[2] += SearchShift
-                x = selector(optimizer[i], func_details, PopulationSize, Iterations, OriginShift)
+                x = selector(optimizer[i], func_details, PopulationSize, Iterations, OriginShift, k)
                 convergence[k] = x.convergence
                 optimizerName = x.optimizer
                 objfname = x.objfname
