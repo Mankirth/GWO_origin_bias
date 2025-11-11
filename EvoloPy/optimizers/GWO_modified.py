@@ -48,6 +48,7 @@ def GWO_modified(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed
     Convergence_curve = numpy.zeros(Max_iter)
     s = solution()
 
+
     print('GWO_modified is optimizing "' + objf.__name__ + '"')
 
     timerStart = time.time()
@@ -140,5 +141,6 @@ def GWO_modified(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed
     s.optimizer = "GWO_modified"
     s.bestIndividual = Alpha_pos + total_shift
     s.objfname = objf.__name__
+    s.shift = total_shift
 
     return s

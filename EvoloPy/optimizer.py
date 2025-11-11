@@ -22,7 +22,7 @@ import EvoloPy.optimizers.DE as de
 import EvoloPy.optimizers.GWO_epsilon as gwo_epsilon
 import EvoloPy.optimizers.GWO_modified as gwo_modified
 import EvoloPy.optimizers.GWO_modified_shrunk as gwo_modified_shrunk
-from EvoloPy import benchmarks as benchmarks
+from EvoloPy import CEC2022 as benchmarks
 import csv
 import numpy
 import time
@@ -161,12 +161,12 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
                             Flag_details == False
                         ):  # just one time to write the header of the CSV file
                             header = numpy.concatenate(
-                                [["Optimizer", "objfname", "ExecutionTime", "Individual"], CnvgHeader]
+                                [["Optimizer", "objfname", "ExecutionTime", "Individual", "Shift"], CnvgHeader]
                             )
                             writer.writerow(header)
                             Flag_details = True  # at least one experiment
                         executionTime[k] = x.executionTime
-                        a = numpy.array([x.optimizer, x.objfname, x.executionTime, x.bestIndividual] + x.convergence.tolist(), dtype=object)
+                        a = numpy.array([x.optimizer, x.objfname, x.executionTime, x.bestIndividual, x.shift] + x.convergence.tolist(), dtype=object)
                         writer.writerow(a)
                     out.close()
   
