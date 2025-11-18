@@ -10,9 +10,9 @@ for j in range(0, 1):
     data = []
 
     for i in range(6):
-        fileResultsDetailsData = pd.read_csv("Tests 30x50x6000 V2\\GWOM\\Search Shift\\GWOM " + str(-i) +"\\experiment_details.csv")
+        fileResultsDetailsData = pd.read_csv("Tests 30x50x6000 V2\\GWO\\Both Shift\\GWO " + str(-i) +"\\experiment_details.csv")
         objective_name = "rastrigin"
-        optimizer_name = "GWO_modified"
+        optimizer_name = "GWO"
 
         detailedData = fileResultsDetailsData[
             (fileResultsDetailsData["Optimizer"] == optimizer_name)
@@ -38,8 +38,8 @@ for j in range(0, 1):
     #     loc="upper right",
     #     bbox_to_anchor=(1.2, 1.02),
     # )
-    plt.gca().set_ylim([0, 300])
-    fig_name = "Tests 30x50x6000 V2\\GWOM\\" + "/GWOM Search Shift Comparison" + ".png"
+    plt.gca().set_ylim([0, 250])
+    fig_name = "Tests 30x50x6000 V2\\GWO\\" + "/GWO Both Shift Comparison" + ".png"
     #plt.set_cmap(plt.get_cmap("gray"))
     plt.savefig(fig_name, bbox_inches="tight")
     plt.clf()

@@ -44,17 +44,18 @@ for i in range(12):
 
     total = 0
     sampleDiffs = 0
+    diffs = np.zeros(30)
     for t in range(30):
         sampleDiffs += gwoData[t] - gwomData[t]
     sampleMean = sampleDiffs / 30
+    #sampleMean = np.mean(gwomData) - np.mean(gwoData)
     for t in range(30):
         total += np.pow(((gwoData[t]-gwomData[t]) - sampleMean), 2)
     sampleStd = np.sqrt(total / (29))
-    print("its "+ str(sampleMean) + " Over " + str(sampleStd/np.sqrt(30)))
     testStat = sampleMean/(sampleStd/np.sqrt(30))
 
-    line.append([np.mean(gwoData).round(2), np.std(gwoData).round(2), np.mean(gwomData).round(2), np.std(gwomData).round(2), ((1 - (np.mean(gwomData)/np.mean(gwoData))) * 100).round(2), np.abs(testStat.round(2))])
-
+    line.append([np.mean(gwoData).round(4), np.std(gwoData).round(4), np.mean(gwomData).round(4), np.std(gwomData).round(4), ((1 - (np.mean(gwomData)/np.mean(gwoData))) * 100).round(4), testStat.round(4)])
+print(line)
 cellText = line
 
 # , notch=True
