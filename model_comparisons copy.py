@@ -11,7 +11,7 @@ for j in range(0, 12):
 
     fileResultsDetailsData = pd.read_csv("GWOM with shift\\experiment_details.csv")
     objective_name = "F"+str(j+1)
-    optimizer_name = "GWO_modified"
+    optimizer_name = "PSO"
     detailedData = fileResultsDetailsData[
         (fileResultsDetailsData["Optimizer"] == optimizer_name)
         & (fileResultsDetailsData["objfname"] == objective_name)
@@ -34,7 +34,7 @@ for j in range(0, 12):
     data.append(detailedData)
 
 # , notch=True
-box = plt.boxplot(data, patch_artist=True, labels=["F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"])
+box = plt.boxplot(data, patch_artist=True, labels=["Starting", "Ending"])
 
 # colors = [
 #     "#5c9eb7",
