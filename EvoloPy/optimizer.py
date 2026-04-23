@@ -5,7 +5,9 @@ Created on Tue May 17 15:50:25 2016
 @author: hossam
 """
 from pathlib import Path
-import EvoloPy.optimizers.PSO as pso
+import EvoloPy.optimizers.FinalPSO as pso
+import EvoloPy.optimizers.Final5PSO as fpso
+import EvoloPy.optimizers.FinalEPSO as epso
 import EvoloPy.optimizers.MVO as mvo
 import EvoloPy.optimizers.GWO as gwo
 import EvoloPy.optimizers.MFO as mfo
@@ -30,6 +32,8 @@ import warnings
 import os
 from EvoloPy import plot_convergence
 from EvoloPy import plot_boxplot
+import sys
+numpy.set_printoptions(threshold=sys.maxsize)
 
 warnings.simplefilter(action="ignore")
 
@@ -43,7 +47,11 @@ def selector(algo, func_details, popSize, Iter, OriginShift, Seed):
     if algo == "SSA":
         x = ssa.SSA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "PSO":
-        x = pso.PSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift)
+        x = pso.PSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, Seed)
+    elif algo == "FPSO":
+        x = fpso.FPSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, Seed)
+    elif algo == "EPSO":
+        x = epso.EPSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, Seed)
     elif algo == "GA":
         x = ga.GA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "BAT":
@@ -124,6 +132,8 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
 
     Flag = False
     Flag_details = False
+    Flag2 = False
+    Flag_details2 = False
 
     # CSV Header for for the cinvergence
     CnvgHeader = []
@@ -166,7 +176,27 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
                             writer.writerow(header)
                             Flag_details = True  # at least one experiment
                         executionTime[k] = x.executionTime
-                        a = numpy.array([x.optimizer, x.objfname, x.executionTime, x.bestIndividual] + x.convergence.tolist(), dtype=object)
+                        a = numpy.array([x.optimizer, x.objfname, x.executionTime, x.bestIndividual] + x.convergence.tolist(),  dtype=object)
+                        writer.writerow(a)
+                    out.close()
+
+                    ExportToFile = results_directory + "experiment_positions.csv"
+                    with open(ExportToFile, "a", newline="\n") as out:
+                        writer = csv.writer(out, delimiter=",")
+                        if (
+                            Flag_details2 == False
+                        ):  # just one time to write the header of the CSV file
+                            header = numpy.concatenate(
+                                [["Optimizer", "objfname", "Starting Position", "Restart 1 End", "Restart 2 Beginning", "Restart 2 End", "Restart 3 Beginning", "Restart 3 End", "Restart 4 Beginning", "Restart 4 End", "Restart 5 Beginning", "Final Positions"]]
+                            )
+                            writer.writerow(header)
+                            Flag_details2 = True  # at least one experiment
+                        executionTime[k] = x.executionTime
+                        a = numpy.array([x.optimizer, x.objfname, x.restart1Initial, x.restart1End, 
+                                        x.restart2Initial, x.restart2End, 
+                                        x.restart3Initial, x.restart3End, 
+                                        x.restart4Initial, x.restart4End, 
+                                        x.restart5Initial, x.endingPositions],  dtype=object)
                         writer.writerow(a)
                     out.close()
   
