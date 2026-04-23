@@ -55,7 +55,6 @@ for i in range(12):
     testStat = sampleMean/(sampleStd/np.sqrt(30))
 
     line.append([np.mean(gwoData).round(4), np.std(gwoData).round(4), np.mean(gwomData).round(4), np.std(gwomData).round(4), ((1 - (np.mean(gwomData)/np.mean(gwoData))) * 100).round(4), testStat.round(4)])
-print(line)
 cellText = line
 
 # , notch=True
@@ -72,42 +71,6 @@ ax.table(rowLabels=rows,
         loc='center')
 fig.tight_layout()
 
-
-# colors = [
-#     "#5c9eb7",
-#     "#f77199",
-#     "#cf81d2",
-#     "#4a5e6a",
-#     "#f45b18",
-#     "#ffbd35",
-#     "#6ba5a1",
-#     "#fcd1a1",
-#     "#c3ffc1",
-#     "#68549d",
-#     "#1c8c44",
-#     "#a44c40",
-#     "#404636",
-# ]
-# for patch, color in zip(box["boxes"], colors):
-#     patch.set_facecolor(color)
-# for patch in box["boxes"]:
-#     patch.set_facecolor('gray')
-# for median in box['medians']:
-#     median.set_color('black')
-
-# if(j == 0):
-#     plt.title("GWO Models Comparison (no shifts)")
-# else:
-#     plt.title("GWO Models " + str(-j) + " Origin Shift Comparison")
-# plt.ylabel("Fitness")
-# plt.legend(
-#     handles=box["boxes"],
-#     labels=["GWO", "GWOM", "GWOM_shift", "GWOMSR"],
-#     loc="upper right",
-#     bbox_to_anchor=(1.2, 1.02),
-# )
-#plt.gca().set_ylim([0, 300])
 fig_name = "CEC2022 30x50x2000 gray\\" + "table.png"
 plt.savefig(fig_name, bbox_inches="tight")
 plt.clf()
-#plt.show()
