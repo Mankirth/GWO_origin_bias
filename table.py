@@ -55,7 +55,6 @@ for i in range(12):
     testStat = sampleMean/(sampleStd/np.sqrt(30))
 
     line.append([np.mean(gwoData).round(4), np.std(gwoData).round(4), np.mean(gwomData).round(4), np.std(gwomData).round(4), ((1 - (np.mean(gwomData)/np.mean(gwoData))) * 100).round(4), testStat.round(4)])
-print(line)
 cellText = line
 
 # , notch=True
@@ -72,6 +71,6 @@ ax.table(rowLabels=rows,
         loc='center')
 fig.tight_layout()
 
-fig_name = "PSOS CEC Tracked\\" + "table.png"
+fig_name = "CEC2022 30x50x2000 gray\\" + "table.png"
 plt.savefig(fig_name, bbox_inches="tight")
 plt.clf()

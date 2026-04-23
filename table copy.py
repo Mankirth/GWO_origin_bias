@@ -6,11 +6,10 @@ import matplotlib.pyplot as plt
 
 # Box Plot
 data = []
-line = []
 
-fileResultsDetailsData = pd.read_csv("PSO 2.05 with clamp\\experiment_details.csv")
+fileResultsDetailsData = pd.read_csv("PSOS Rastrigin Tracked\\experiment_details.csv")
 objective_name = "rastrigin"
-optimizer_name = "PSO"
+optimizer_name = "FPSO"
 detailedData = fileResultsDetailsData[
     (fileResultsDetailsData["Optimizer"] == optimizer_name)
     & (fileResultsDetailsData["objfname"] == objective_name)
