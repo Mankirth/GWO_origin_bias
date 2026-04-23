@@ -8,13 +8,13 @@ import matplotlib.pyplot as plt
 data = []
 line = []
 
-columns = ('PSO Mean', 'PSO StdDev', 'EPSO Mean', 'EPSO StdDev', "%-Diff", "Paired T-Test")
+columns = ('GWO Mean', 'GWO StdDev', 'GWOM Mean', 'GWOM StdDev', "%-Diff", "Paired T-Test")
 rows = ['1','2','3','4','5','6','7','8','9','10','11','12']
 errors = [300, 400, 600, 800, 900, 1800, 2000, 2200, 2300, 2400, 2600, 2700]
 for i in range(12):
-    fileResultsDetailsData = pd.read_csv("PSOS CEC Tracked\\experiment_details.csv")
+    fileResultsDetailsData = pd.read_csv("CEC2022 30x50x2000 gray\\experiment_details.csv")
     objective_name = "F" + str(i+1)
-    optimizer_name = "PSO"
+    optimizer_name = "GWO"
     detailedData = fileResultsDetailsData[
         (fileResultsDetailsData["Optimizer"] == optimizer_name)
         & (fileResultsDetailsData["objfname"] == objective_name)
@@ -27,9 +27,9 @@ for i in range(12):
         detailedData[t] -= errors[i]
     gwoData = detailedData
 
-    fileResultsDetailsData = pd.read_csv("PSOS CEC Tracked\\experiment_details.csv")
+    fileResultsDetailsData = pd.read_csv("CEC2022 30x50x2000 gray\\experiment_details.csv")
     objective_name = "F" + str(i+1)
-    optimizer_name = "EPSO"
+    optimizer_name = "GWO_modified"
     detailedData = fileResultsDetailsData[
         (fileResultsDetailsData["Optimizer"] == optimizer_name)
         & (fileResultsDetailsData["objfname"] == objective_name)
@@ -53,10 +53,9 @@ for i in range(12):
         total += np.pow(((gwoData[t]-gwomData[t]) - sampleMean), 2)
     sampleStd = np.sqrt(total / (29))
     testStat = sampleMean/(sampleStd/np.sqrt(30))
-    percentDiff = ((1 - (np.mean(gwomData)/np.mean(gwoData))) * 100).round(4)
-    if(i+1 == 1):
-        percentDiff = -1*((1 - (np.mean(gwoData)/np.mean(gwomData))) * 100).round(4)
-    line.append([np.mean(gwoData).round(4), np.std(gwoData).round(4), np.mean(gwomData).round(4), np.std(gwomData).round(4), percentDiff, testStat.round(4)])
+
+    line.append([np.mean(gwoData).round(4), np.std(gwoData).round(4), np.mean(gwomData).round(4), np.std(gwomData).round(4), ((1 - (np.mean(gwomData)/np.mean(gwoData))) * 100).round(4), testStat.round(4)])
+print(line)
 cellText = line
 
 # , notch=True
