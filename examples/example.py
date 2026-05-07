@@ -26,10 +26,10 @@ objectivefunc = ["F3", "F4"]
 
 # Select number of repetitions for each experiment.
 # To obtain meaningful statistical results, usually 30 independent runs are executed for each algorithm.
-NumOfRuns = 3
+NumOfRuns = 30
 
 # Select general parameters for all optimizers (population size, number of iterations) ....
-params = {"PopulationSize": 30, "Iterations": 50}
+params = {"PopulationSize": 50, "Iterations": 2000, "OriginShift": 0, "SearchShift": 0}
 
 # Choose whether to Export the results in different formats
 export_flags = {

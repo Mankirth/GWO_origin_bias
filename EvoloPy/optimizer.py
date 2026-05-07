@@ -19,7 +19,9 @@ import EvoloPy.optimizers.HHO as hho
 import EvoloPy.optimizers.SCA as sca
 import EvoloPy.optimizers.JAYA as jaya
 import EvoloPy.optimizers.DE as de
-from EvoloPy import benchmarks
+import EvoloPy.optimizers.PSO_modified as pso_modified
+import EvoloPy.optimizers.GWO_modified as gwo_modified
+from EvoloPy import CEC2022 as benchmarks
 import csv
 import numpy
 import time
@@ -40,7 +42,7 @@ def selector(algo, func_details, popSize, Iter):
     if algo == "SSA":
         x = ssa.SSA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "PSO":
-        x = pso.PSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+        x = pso.PSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "GA":
         x = ga.GA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "BAT":
@@ -48,7 +50,7 @@ def selector(algo, func_details, popSize, Iter):
     elif algo == "FFA":
         x = ffa.FFA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "GWO":
-        x = gwo.GWO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+        x = gwo.GWO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "WOA":
         x = woa.WOA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "MVO":
@@ -65,6 +67,10 @@ def selector(algo, func_details, popSize, Iter):
         x = jaya.JAYA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "DE":
         x = de.DE(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+    elif algo == "PSO_modified":
+        x = pso_modified.PSO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
+    elif algo == "GWO_modified":
+        x = gwo_modified.GWO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     else:
         return None
     return x

@@ -12,7 +12,7 @@ from EvoloPy.solution import solution
 import time
 
 
-def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter):
+def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
 
     # Max_iter=1000
     # lb=-100
