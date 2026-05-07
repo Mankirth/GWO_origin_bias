@@ -11,14 +11,9 @@ import math
 from EvoloPy.solution import solution
 import time
 
-
 def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
-
-    # Max_iter=1000
-    # lb=-100
-    # ub=100
-    # dim=30
-    # SearchAgents_no=5
+    numpy.random.seed(Seed)
+    random.seed(Seed)
 
     # initialize alpha, beta, and delta_pos
     Alpha_pos = numpy.zeros(dim)
@@ -59,7 +54,7 @@ def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
                 Positions[i, j] = numpy.clip(Positions[i, j], lb[j], ub[j])
 
             # Calculate objective function for each search agent
-            fitness = objf(Positions[i, :])
+            fitness = objf(Positions[i, :] + OriginShift)
 
             # Update Alpha, Beta, and Delta
             if fitness < Alpha_score:

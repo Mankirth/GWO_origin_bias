@@ -1,25 +1,22 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun May 15 22:37:00 2016
 
-@author: Hossam Faris
-"""
 
+import math
 import random
 import numpy
 from EvoloPy.solution import solution
 import time
 
-
-def PSO(objf, lb, ub, dim, PopSize, iters):
+def PSO(objf, lb, ub, dim, PopSize, iters, seed):
+    numpy.random.seed(seed)
+    random.seed(seed)
 
     # PSO parameters
 
     Vmax = 6
     wMax = 0.9
     wMin = 0.2
-    c1 = 2
-    c2 = 2
+    c1 = 2.05
+    c2 = 2.05
 
     s = solution()
     if not isinstance(lb, list):
@@ -79,6 +76,10 @@ def PSO(objf, lb, ub, dim, PopSize, iters):
                     + c1 * r1 * (pBest[i, j] - pos[i, j])
                     + c2 * r2 * (gBest[j] - pos[i, j])
                 )
+
+                c = c1 + c2
+                r = 2 / (abs(2 - c - math.sqrt((c * c) - (4*c))))
+                vel[i,j] = r*vel[i,j]
 
                 if vel[i, j] > Vmax:
                     vel[i, j] = Vmax
