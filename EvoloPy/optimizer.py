@@ -167,26 +167,6 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
                         a = numpy.array([x.optimizer, x.objfname, x.executionTime, x.bestIndividual] + x.convergence.tolist(),  dtype=object)
                         writer.writerow(a)
                     out.close()
-
-                    # ExportToFile = results_directory + "experiment_positions.csv"
-                    # with open(ExportToFile, "a", newline="\n") as out:
-                    #     writer = csv.writer(out, delimiter=",")
-                    #     if (
-                    #         Flag_details2 == False
-                    #     ):  # just one time to write the header of the CSV file
-                    #         header = numpy.concatenate(
-                    #             [["Optimizer", "objfname", "Starting Position", "Restart 1 End", "Restart 2 Beginning", "Restart 2 End", "Restart 3 Beginning", "Restart 3 End", "Restart 4 Beginning", "Restart 4 End", "Restart 5 Beginning", "Final Positions"]]
-                    #         )
-                    #         writer.writerow(header)
-                    #         Flag_details2 = True  # at least one experiment
-                    #     executionTime[k] = x.executionTime
-                    #     a = numpy.array([x.optimizer, x.objfname, x.restart1Initial, x.restart1End, 
-                    #                     x.restart2Initial, x.restart2End, 
-                    #                     x.restart3Initial, x.restart3End, 
-                    #                     x.restart4Initial, x.restart4End, 
-                    #                     x.restart5Initial, x.endingPositions],  dtype=object)
-                    #     writer.writerow(a)
-                    #out.close()
   
 
             if Export == True:
