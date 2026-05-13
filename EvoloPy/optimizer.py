@@ -8,6 +8,7 @@ from pathlib import Path
 import EvoloPy.optimizers.MVO as mvo
 import EvoloPy.optimizers.GWO as gwo
 import EvoloPy.optimizers.PSO as pso
+import EvoloPy.optimizers.PSO_modified as pso_modified
 import EvoloPy.optimizers.MFO as mfo
 import EvoloPy.optimizers.CS as cs
 import EvoloPy.optimizers.BAT as bat
@@ -19,6 +20,7 @@ import EvoloPy.optimizers.HHO as hho
 import EvoloPy.optimizers.SCA as sca
 import EvoloPy.optimizers.JAYA as jaya
 import EvoloPy.optimizers.DE as de
+import EvoloPy.optimizers.DE_modified as de_modified
 import EvoloPy.optimizers.GWO_modified as gwo_modified
 from EvoloPy import benchmarks
 import csv
@@ -70,6 +72,10 @@ def selector(algo, func_details, popSize, Iter, OriginShift, Seed):
         x = de.DE(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "GWOM":
         x = gwo_modified.GWO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
+    elif algo == "PSOM":
+        x = pso_modified.PSO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
+    elif algo == "DEM":
+        x = de_modified.DE_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     else:
         return None
     return x
