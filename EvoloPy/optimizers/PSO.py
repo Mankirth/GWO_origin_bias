@@ -6,12 +6,15 @@ Created on Sun May 15 22:37:00 2016
 """
 
 import numpy as np
+import random
 from EvoloPy.solution import solution
 import time
 from typing import Callable, Union, List
 
 def PSO(objf: Callable, lb: Union[float, List[float]], ub: Union[float, List[float]], 
-        dim: int, PopSize: int, iters: int) -> solution:
+        dim: int, PopSize: int, iters: int, originShift: int, seed: int) -> solution:
+    np.random.seed(seed)
+    random.seed(seed)
     """
     Particle Swarm Optimization (PSO) algorithm
     
@@ -94,7 +97,7 @@ def PSO(objf: Callable, lb: Union[float, List[float]], ub: Union[float, List[flo
             pos[i] = np.clip(pos[i], lb, ub)
             
             # Evaluate fitness
-            fitness = objf(pos[i])
+            fitness = objf(pos[i] + originShift)
             
             # Update personal best
             if fitness < pBestScore[i]:

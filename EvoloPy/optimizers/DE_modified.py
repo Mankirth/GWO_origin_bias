@@ -3,11 +3,22 @@ import numpy
 import time
 from EvoloPy.solution import solution
 
+# -------------------------
+# Reflection function
+# -------------------------
+def reflect(value, lower_bound, upper_bound):
+    if lower_bound >= upper_bound:
+        return lower_bound
+    range_size = upper_bound - lower_bound
+    normalized = (value - lower_bound) % (2 * range_size)
+    if normalized > range_size:
+        return upper_bound - (normalized - range_size)
+    return lower_bound + normalized
 
 # Differential Evolution (DE)
 # mutation factor = [0.5, 2]
 # crossover_ratio = [0,1]
-def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
+def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     numpy.random.seed(Seed)
     random.seed(Seed)
 
@@ -50,6 +61,9 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
         if fitness < s.best:
             s.best = fitness
             s.leader_solution = population[i, :]
+    
+    # Accumulated shift (just like GWO_modified)
+    total_shift = numpy.zeros(dim)
 
     convergence_curve = numpy.zeros(iters)
     # start work
@@ -58,15 +72,12 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
 
-    total_shift = [0] * dim
-
     t = 0
     while t < iters:
         # should i stop
         if stopping_func is not None and stopping_func(s.best, s.leader_solution, t):
             break
 
-        shifted = True
         # loop through population
         for i in range(PopSize):
             # 1. Mutation
@@ -89,10 +100,16 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
                 # add dimension value to the mutant solution
                 mutant_sol.append(d_val)
 
+                mutant_sol[i, d] = reflect(
+                    mutant_sol[i, d],
+                    lb[d] - total_shift[d],
+                    ub[d] - total_shift[d]
+                )
+
             # 3. Replacement / Evaluation
 
             # clip new solution (mutant)
-            mutant_sol = numpy.clip(mutant_sol, lb, ub)
+            #mutant_sol = numpy.clip(mutant_sol, lb, ub)
 
             # calc fitness
             mutant_fitness = objf(mutant_sol)
@@ -108,20 +125,31 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
                     shifted = True
                     s.best = mutant_fitness
                     s.leader_solution = mutant_sol
-        # Perform shift and reinitialization if new alpha found
-        if shifted:
-            shift_vector = s.leader_solution.copy()
-            # Update total shift
-            if numpy.linalg.norm(shift_vector) > 0.05 * numpy.linalg.norm(numpy.array(ub)-numpy.array(lb)):
-                total_shift += s.leader_solution
             
-                # Reinitialize all positions randomly (except alpha)
-                for i in range(dim):
-                    if PopSize > 1:  # Only if we have multiple agents
-                        # Keep one position at origin
-                        population[0, :] = numpy.zeros(dim)  # Alpha stays at origin
-                        # Randomize other positions
-                        population[1:, i] = numpy.random.uniform(0, 1, PopSize-1) * (ub[i] - lb[i]) + lb[i] - total_shift[i]
+            if shifted:
+                shift_vector = mutant_sol.copy()
+                domain_size = numpy.linalg.norm(numpy.array(ub) - numpy.array(lb))
+
+                # Threshold same as GWO_modified
+                if numpy.linalg.norm(shift_vector) > 0.05 * domain_size:
+
+                    # Accumulate shift
+                    total_shift += mutant_sol
+
+                    # Recenter positions
+                    s.leader_solution -= shift_vector
+                    pos -= shift_vector
+
+                    # Reinitialize swarm: 1 at origin, rest random
+                    pos[0, :] = numpy.zeros(dim)
+                    for j in range(dim):
+                        pos[1:, j] = (
+                            numpy.random.uniform(0, 1, PopSize - 1)
+                            * (ub[j] - lb[j])
+                            + lb[j]
+                            - total_shift[j]
+                        )
+            
 
         convergence_curve[t] = s.best
         if t % 1 == 0:
@@ -137,7 +165,7 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
         s.executionTime = timerEnd - timerStart
         s.convergence = convergence_curve
         s.optimizer = "DEM"
-        s.bestIndividual = s.leader_solution
+        s.bestIndividual = s.leader_solution + total_shift
         s.objfname = objf.__name__
 
     # return solution
