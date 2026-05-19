@@ -18,7 +18,7 @@ def reflect(value, lower_bound, upper_bound):
 # Differential Evolution (DE)
 # mutation factor = [0.5, 2]
 # crossover_ratio = [0,1]
-def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
+def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     numpy.random.seed(Seed)
     random.seed(Seed)
 
@@ -74,6 +74,9 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
 
     t = 0
     while t < iters:
+
+        shifted = False
+
         # should i stop
         if stopping_func is not None and stopping_func(s.best, s.leader_solution, t):
             break
@@ -86,7 +89,7 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
             ids_except_current = [_ for _ in range(PopSize) if _ != i]
             id_1, id_2, id_3 = random.sample(ids_except_current, 3)
 
-            mutant_sol = []
+            mutant_sol = numpy.zeros(dim)
             for d in range(dim):
                 d_val = population[id_1, d] + mutation_factor * (
                     population[id_2, d] - population[id_3, d]
@@ -97,14 +100,14 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
                 if rn > crossover_ratio:
                     d_val = population[i, d]
 
-                # add dimension value to the mutant solution
-                mutant_sol.append(d_val)
-
-                mutant_sol[i, d] = reflect(
-                    mutant_sol[i, d],
+                d_val = reflect(
+                    d_val,
                     lb[d] - total_shift[d],
                     ub[d] - total_shift[d]
                 )
+
+                # add dimension value to the mutant solution
+                mutant_sol[d] = d_val
 
             # 3. Replacement / Evaluation
 
@@ -112,7 +115,7 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
             #mutant_sol = numpy.clip(mutant_sol, lb, ub)
 
             # calc fitness
-            mutant_fitness = objf(mutant_sol)
+            mutant_fitness = objf(mutant_sol + OriginShift)
             # s.func_evals += 1
 
             # replace if mutant_fitness is better
@@ -137,13 +140,14 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
                     total_shift += mutant_sol
 
                     # Recenter positions
+                    mutant_sol -= shift_vector
                     s.leader_solution -= shift_vector
-                    pos -= shift_vector
+                    population -= shift_vector
 
                     # Reinitialize swarm: 1 at origin, rest random
-                    pos[0, :] = numpy.zeros(dim)
+                    population[0, :] = numpy.zeros(dim)
                     for j in range(dim):
-                        pos[1:, j] = (
+                        population[1:, j] = (
                             numpy.random.uniform(0, 1, PopSize - 1)
                             * (ub[j] - lb[j])
                             + lb[j]
