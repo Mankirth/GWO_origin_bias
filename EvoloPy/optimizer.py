@@ -8,7 +8,7 @@ from pathlib import Path
 import EvoloPy.optimizers.MVO as mvo
 import EvoloPy.optimizers.GWO as gwo
 import EvoloPy.optimizers.PSO as pso
-import EvoloPy.optimizers.PSO_modified as pso_modified
+import EvoloPy.optimizers.PSOM as pso_modified
 import EvoloPy.optimizers.MFO as mfo
 import EvoloPy.optimizers.CS as cs
 import EvoloPy.optimizers.BAT as bat
@@ -45,7 +45,7 @@ def selector(algo, func_details, popSize, Iter, OriginShift, Seed):
     if algo == "SSA":
         x = ssa.SSA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "PSO":
-        x = pso.PSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, Seed)
+        x = pso.PSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "GA":
         x = ga.GA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "BAT":
@@ -73,7 +73,7 @@ def selector(algo, func_details, popSize, Iter, OriginShift, Seed):
     elif algo == "GWOM":
         x = gwo_modified.GWO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "PSOM":
-        x = pso_modified.PSO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
+        x = pso_modified.PSOM(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "DEM":
         x = de_modified.DE_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     else:
