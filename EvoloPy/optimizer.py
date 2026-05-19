@@ -69,7 +69,7 @@ def selector(algo, func_details, popSize, Iter, OriginShift, Seed):
     elif algo == "JAYA":
         x = jaya.JAYA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "DE":
-        x = de.DE(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
+        x = de.DE(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "GWOM":
         x = gwo_modified.GWO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "PSOM":
