@@ -28,17 +28,17 @@ objectivefunc = ["rastrigin"]
 # To obtain meaningful statistical results, usually 30 independent runs are executed for each algorithm.
 NumOfRuns = 30
 
-#for i in range(5):
-# Select general parameters for all optimizers (population size, number of iterations) ....
-params = {"PopulationSize": 50, "Iterations": 6000, "OriginShift": 0, "SearchShift": 5}
+for i in range(5):
+    # Select general parameters for all optimizers (population size, number of iterations) ....
+    params = {"PopulationSize": 50, "Iterations": 6000, "OriginShift": 0, "SearchShift": i+1}
 
-# Choose whether to Export the results in different formats
-export_flags = {
-    "Export_avg": True,
-    "Export_details": True,
-    "Export_convergence": True,
-    "Export_boxplot": True,
-}
+    # Choose whether to Export the results in different formats
+    export_flags = {
+        "Export_avg": True,
+        "Export_details": True,
+        "Export_convergence": True,
+        "Export_boxplot": True,
+    }
 
 
-run(optimizer, objectivefunc, NumOfRuns, params, export_flags)
+    run(optimizer, objectivefunc, NumOfRuns, params, export_flags)
