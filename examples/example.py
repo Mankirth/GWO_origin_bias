@@ -28,9 +28,9 @@ objectivefunc = ["rastrigin"]
 # To obtain meaningful statistical results, usually 30 independent runs are executed for each algorithm.
 NumOfRuns = 30
 
-for i in range(6):
+for i in range(5):
     # Select general parameters for all optimizers (population size, number of iterations) ....
-    params = {"PopulationSize": 50, "Iterations": 6000, "OriginShift": -i, "SearchShift": 0}
+    params = {"PopulationSize": 50, "Iterations": 6000, "OriginShift": -(i+1), "SearchShift": i+1}
 
     # Choose whether to Export the results in different formats
     export_flags = {
