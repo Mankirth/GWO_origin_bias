@@ -53,7 +53,7 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
 
     # calculate fitness for all the population
     for i in range(PopSize):
-        fitness = objf(population[i, :] + OriginShift)
+        fitness = objf(population[i, :] + OriginShift + total_shift)
         population_fitness[p] = fitness
         # s.func_evals += 1
 
@@ -115,7 +115,7 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
             #mutant_sol = numpy.clip(mutant_sol, lb, ub)
 
             # calc fitness
-            mutant_fitness = objf(mutant_sol + OriginShift)
+            mutant_fitness = objf(mutant_sol + OriginShift + total_shift)
             # s.func_evals += 1
 
             # replace if mutant_fitness is better
