@@ -11,7 +11,7 @@ for j in range(0, 1):
 
     fileResultsDetailsData = pd.read_csv("PSO(M) 0\\experiment_details.csv")
     objective_name = "rastrigin"
-    optimizer_name = "PSO"
+    optimizer_name = "PSOM"
 
     detailedData = fileResultsDetailsData[
         (fileResultsDetailsData["Optimizer"] == optimizer_name)
@@ -24,7 +24,7 @@ for j in range(0, 1):
     for i in range(5):
         fileResultsDetailsData = pd.read_csv("PSO(M) 30x50x6000\\Both Shift " + str(i+1) +"\\experiment_details.csv")
         objective_name = "rastrigin"
-        optimizer_name = "PSO"
+        optimizer_name = "PSOM"
 
         detailedData = fileResultsDetailsData[
             (fileResultsDetailsData["Optimizer"] == optimizer_name)
@@ -51,7 +51,7 @@ for j in range(0, 1):
     #     bbox_to_anchor=(1.2, 1.02),
     # )
     plt.gca().set_ylim([0, 300])
-    fig_name = "PSO(M) 30x50x6000\\" + "/PSO Both Shift Comparison" + ".png"
+    fig_name = "PSO(M) 30x50x6000\\" + "/PSOM Both Shift Comparison" + ".png"
     #plt.set_cmap(plt.get_cmap("gray"))
     plt.savefig(fig_name, bbox_inches="tight")
     plt.clf()
