@@ -51,6 +51,9 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
 
     population = numpy.array(population)
 
+    # Accumulated shift (just like GWO_modified)
+    total_shift = numpy.zeros(dim)
+
     # calculate fitness for all the population
     for i in range(PopSize):
         fitness = objf(population[i, :] + OriginShift + total_shift)
@@ -62,8 +65,6 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
             s.best = fitness
             s.leader_solution = population[i, :]
     
-    # Accumulated shift (just like GWO_modified)
-    total_shift = numpy.zeros(dim)
 
     convergence_curve = numpy.zeros(iters)
     # start work
@@ -129,31 +130,33 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
                     s.best = mutant_fitness
                     s.leader_solution = mutant_sol
             
-            if shifted:
-                shift_vector = mutant_sol.copy()
-                domain_size = numpy.linalg.norm(numpy.array(ub) - numpy.array(lb))
+        if shifted:
+            shift_vector = s.leader_solution.copy()
+            domain_size = numpy.linalg.norm(numpy.array(ub) - numpy.array(lb))
 
-                # Threshold same as GWO_modified
-                if numpy.linalg.norm(shift_vector) > 0.05 * domain_size:
+            # Threshold same as GWO_modified
+            if numpy.linalg.norm(shift_vector) > 0.05 * domain_size:
+                # Accumulate shift
+                total_shift += shift_vector
 
-                    # Accumulate shift
-                    total_shift += mutant_sol
+                # Recenter positions
+                s.leader_solution = numpy.zeros(dim)
 
-                    # Recenter positions
-                    mutant_sol -= shift_vector
-                    s.leader_solution -= shift_vector
-                    population -= shift_vector
+                # Reinitialize swarm: 1 at origin, rest random
+                population = []
 
-                    # Reinitialize swarm: 1 at origin, rest random
-                    population[0, :] = numpy.zeros(dim)
-                    for j in range(dim):
-                        population[1:, j] = (
-                            numpy.random.uniform(0, 1, PopSize - 1)
-                            * (ub[j] - lb[j])
-                            + lb[j]
-                            - total_shift[j]
-                        )
-            
+                population_fitness = numpy.array([float("inf") for _ in range(PopSize)])
+
+                for p in range(PopSize):
+                    sol = []
+                    for d in range(dim):
+                        d_val = random.uniform(lb[d], ub[d])
+                        sol.append(d_val)
+
+                    population.append(sol)
+
+                population = numpy.array(population)
+                population[0, :] = numpy.zeros(dim)
 
         convergence_curve[t] = s.best
         if t % 1 == 0:
