@@ -9,6 +9,7 @@ import EvoloPy.optimizers.MVO as mvo
 import EvoloPy.optimizers.GWO as gwo
 import EvoloPy.optimizers.PSO as pso
 import EvoloPy.optimizers.PSOM as pso_modified
+import EvoloPy.optimizers.ES as es
 import EvoloPy.optimizers.MFO as mfo
 import EvoloPy.optimizers.CS as cs
 import EvoloPy.optimizers.BAT as bat
@@ -74,6 +75,8 @@ def selector(algo, func_details, popSize, Iter, OriginShift, Seed):
         x = gwo_modified.GWO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "PSOM":
         x = pso_modified.PSOM(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
+    elif algo == "ES":
+        x = es.ES(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "DEM":
         x = de_modified.DE_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     else:
