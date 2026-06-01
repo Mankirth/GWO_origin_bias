@@ -11,7 +11,20 @@ import math
 from EvoloPy.solution import solution
 import time
 
-def ES(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
+def reflect(value, lower_bound, upper_bound):
+
+    if lower_bound >= upper_bound:
+        return lower_bound  
+    
+    range_size = upper_bound - lower_bound
+    
+    normalized = (value - lower_bound) % (2 * range_size)
+    
+    if normalized > range_size:
+        return upper_bound - (normalized - range_size)
+    return lower_bound + normalized
+
+def ESM(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
     numpy.random.seed(Seed)
     random.seed(Seed)
 
@@ -38,6 +51,9 @@ def ES(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
             numpy.random.uniform(0, 1, SearchAgents_no) * (ub[i] - lb[i]) + lb[i]
         )
 
+    # Accumulated shift (just like GWO_modified)
+    total_shift = numpy.zeros(dim)
+
     Convergence_curve = numpy.zeros(Max_iter)
     s = solution()
 
@@ -48,9 +64,19 @@ def ES(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
     # Main loop
     for l in range(0, Max_iter):
+        shifted = False
+
+        for i in range(SearchAgents_no):
+            # Reflection BEFORE fitness
+            for j in range(dim):
+                Positions[i, j] = reflect(
+                    Positions[i, j],
+                    lb[j] - total_shift[j],
+                    ub[j] - total_shift[j]
+                )
 
         # evaluate fitness for the population
-        scores = [objf(c + OriginShift) for c in Positions]
+        scores = [objf(c + OriginShift + total_shift) for c in Positions]
 		# rank scores in ascending order
         ranks = numpy.argsort(numpy.argsort(scores))
 		# select the indexes for the top mu ranked solutions
@@ -67,7 +93,7 @@ def ES(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
             for _ in range(n_children):
                 child = numpy.zeros(dim)
                 for j in range(dim):
-                    child[j] = numpy.clip(Positions[i][j] + ((numpy.random.uniform(0, 1) * (ub[j] - lb[j]) + lb[j]) * step_size), lb[j], ub[j])
+                    child[j] = Positions[i][j] + ((numpy.random.uniform(0, 1) * (ub[j] - lb[j]) + lb[j]) * step_size)
                 children.append(child)
 
 		# replace population with children
@@ -80,7 +106,7 @@ def ES(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
     s.endTime = time.strftime("%Y-%m-%d-%H-%M-%S")
     s.executionTime = timerEnd - timerStart
     s.convergence = Convergence_curve
-    s.optimizer = "ES"
+    s.optimizer = "ESM"
     s.bestIndividual = best
     s.objfname = objf.__name__
 
