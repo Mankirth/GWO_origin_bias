@@ -58,7 +58,7 @@ def ESM(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
     s = solution()
 
     # Loop counter
-    print('ES is optimizing  "' + objf.__name__ + '"')
+    print('ESM is optimizing  "' + objf.__name__ + '"')
 
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
@@ -87,14 +87,43 @@ def ESM(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
         for i in selected:
 			# check if this parent is the best solution ever seen
             if scores[i] < best_eval:
+                shifted = True
                 best = Positions[i]
                 best_eval = scores[i]
-			# create children for parent
-            for _ in range(n_children):
-                child = numpy.zeros(dim)
+
+        # --------------------------------------
+        # Shift and reset condition (RESTART)
+        # --------------------------------------
+        if shifted:
+            shift_vector = best.copy()
+            domain_size = np.linalg.norm(np.array(ub) - np.array(lb))
+
+            # Threshold same as GWO_modified
+            if np.linalg.norm(shift_vector) > 0.05 * domain_size:
+
+                # Accumulate shift
+                total_shift += best
+
+                # Recenter positions
+                best -= shift_vector
+
+                # Reinitialize swarm: 1 at origin, rest random
+                Positions[0, :] = np.zeros(dim)
                 for j in range(dim):
-                    child[j] = Positions[i][j] + ((numpy.random.uniform(0, 1) * (ub[j] - lb[j]) + lb[j]) * step_size)
-                children.append(child)
+                    Positions[1:, j] = (
+                        np.random.uniform(0, 1, PopSize - 1)
+                        * (ub[j] - lb[j])
+                        + lb[j]
+                        - total_shift[j]
+                    )
+        else:
+            for i in selected:
+                # create children for parent
+                for _ in range(n_children):
+                    child = numpy.zeros(dim)
+                    for j in range(dim):
+                        child[j] = Positions[i][j] + ((numpy.random.uniform(0, 1) * (ub[j] - lb[j]) + lb[j]) * step_size)
+                    children.append(child)
 
 		# replace population with children
         Positions = children
