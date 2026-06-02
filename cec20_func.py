@@ -34,8 +34,6 @@ def benchmark1(x):
     h[:,8] = np.multiply(x[:,6], math.log(abs(x[:,9]-x[:,7])+1e-8)) - np.multiply(x[:,6], math.log(600))-x[:,9]+x[:,7]+600
     return f
 
-
-
 def benchmark2(x):
     ps = x.shape[0]
     D = x.shape[1]
@@ -52,7 +50,7 @@ def benchmark2(x):
     h[:,7] = np.multiply(x[:,4], math.log(math.abs(x[:,9]-100)+1e-8) - np.multiply(x[:,4], math.log(300-x[:,7])) + 1e-8) - x[:,9]-x[:,7]+400
     h[:,8] = np.multiply(x[:,5], math.log(math.abs(x[:,10]-x[:,7])+1e-8))- np.multiply(x[:,5], math.log(abs(400-x[:,8])+1e-8)) - x[:,10]+x[:,7]-x[:,8]+400
     h[:,9] = np.multiply(x[:,6], math.log(math.abs(x[:,11]-x[:,8])+1e-8))- np.multiply(x[:,6], math.log(100))-x[:,11]+x[:,8]+100
-
+    return f
 
 def benchmark3(x):
     ps = x.shape[0]
@@ -75,7 +73,7 @@ def benchmark3(x):
     g[:,12]= np.multiply(1020.4082, x[:,4])*x[:,2]+1.2244898*x[:,3]*x[:,4]-100000*x[:,2]
     g[:,13]= np.multiply(6.25, x[:,1])*x[:,6]+6.25*x[:,1]-7.625*x[:,3]-100000
     g[:,14]= np.multiply(1.22, x[:,3])-x[:,6]*x[:,1]-x[:,1]+1.0
-
+    return f
 
 def benchmark4(x):
     ps = x.shape[0]
@@ -92,7 +90,7 @@ def benchmark4(x):
     h[:,3] = x[:,3]+x[:,1]+k3*x[:,3]*x[:,5]-1
     h[:,4] = x[:,4]-x[:,3]+x[:,2]-x[:,1]+k4*x[:,4]*x[:,6]
     g[:,1] = x[:,5]^0.5+x[:,6]^0.5-4
-
+    return f
 
 def benchmark5(x):
     ps = x.shape[0]
@@ -110,6 +108,7 @@ def benchmark5(x):
     h[:,2] = x[:,1]-x[:,7]-x[:,5]
     h[:,3] = x[:,2]-x[:,8]-x[:,6]
     h[:,4] = np.multiply(x[:,9], x[:,7]) + np.multiply(x[:,9], x[:,8]) - np.multiply(3, x[:,3]) -x[:,4]
+    return f
 
 
 ## Power Electronic Problems		
@@ -142,6 +141,7 @@ def benchmark45(x):
         g[:,i] = x[:,i]-x[:,i+1]+1e-6
     
     h = sum(s*math.cos(x*math.pi/180),2)-m
+    return f
 
 
 
@@ -173,6 +173,7 @@ def benchmark46(x):
         g[:,i] = x[:,i]-x[:,i+1]+1e-6
     
     h = sum(s*math.cos(x*math.pi/180),2)-2*m
+    return f
 
 
 def benchmark47(x):
@@ -203,6 +204,7 @@ def benchmark47(x):
         g[:,i] = x[:,i]-x[:,i+1]+1e-6
     
     h = sum(np.multiply(s, math.cos(x*math.pi/180)),2)-3*m    
+    return f
 
 
 def benchmark48(x):
@@ -233,6 +235,7 @@ def benchmark48(x):
         g[:,i] = x[:,i]-x[:,i+1]+1e-6
     
     h = sum(s*math.cos(x*math.pi/180),2)-4*m 
+    return f
 
 
 def benchmark49(x):
@@ -262,6 +265,7 @@ def benchmark49(x):
         g[:,i] = x[:,i]-x[:,i+1]+1e-6
     
     h = sum(s*math.cos(x*math.pi/180),2)-5*m 
+    return f
 
 
 def benchmark50(x):
@@ -294,6 +298,7 @@ def benchmark50(x):
 
     g= np.transpose(g)
     h= np.transpose(h)
+    return f
 
 
 def cec22_test_func(x, nx, mx, func_num):
@@ -462,8 +467,6 @@ def getFunctionDetails(a):
         "F8": ["F8", -100, 100, 10],
         "F9": ["F9", -100, 100, 10],
         "F10": ["F10", -100, 100, 10],
-        "F11": ["F11", -100, 100, 10],
-        "F12": ["F12", -100, 100, 10],
     }
     return param.get(a, "nothing")
 

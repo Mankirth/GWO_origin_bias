@@ -69,8 +69,8 @@ def ESM(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
         for i in range(SearchAgents_no):
             # Reflection BEFORE fitness
             for j in range(dim):
-                Positions[i, j] = reflect(
-                    Positions[i, j],
+                Positions[i][j] = reflect(
+                    Positions[i][j],
                     lb[j] - total_shift[j],
                     ub[j] - total_shift[j]
                 )
@@ -96,10 +96,10 @@ def ESM(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
         # --------------------------------------
         if shifted:
             shift_vector = best.copy()
-            domain_size = np.linalg.norm(np.array(ub) - np.array(lb))
+            domain_size = numpy.linalg.norm(numpy.array(ub) - numpy.array(lb))
 
             # Threshold same as GWO_modified
-            if np.linalg.norm(shift_vector) > 0.05 * domain_size:
+            if numpy.linalg.norm(shift_vector) > 0.05 * domain_size:
 
                 # Accumulate shift
                 total_shift += best
@@ -108,12 +108,12 @@ def ESM(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
                 best -= shift_vector
 
                 # Reinitialize swarm: 1 at origin, rest random
-                Positions[0, :] = np.zeros(dim)
+                Positions = numpy.zeros((SearchAgents_no, dim))
                 for j in range(dim):
                     Positions[1:, j] = (
-                        np.random.uniform(0, 1, PopSize - 1)
+                        ((numpy.random.uniform(0, 1, SearchAgents_no - 1)
                         * (ub[j] - lb[j])
-                        + lb[j]
+                        + lb[j]) * step_size)
                         - total_shift[j]
                     )
         else:
@@ -125,8 +125,10 @@ def ESM(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
                         child[j] = Positions[i][j] + ((numpy.random.uniform(0, 1) * (ub[j] - lb[j]) + lb[j]) * step_size)
                     children.append(child)
 
-		# replace population with children
-        Positions = children
+            # replace population with children
+            Positions = children
+
+        Convergence_curve[l] = best_eval
 
         if l % 1 == 0:
             print(["At iteration " + str(l) + " the best fitness is " + str(best_eval)])

@@ -73,6 +73,8 @@ def ES(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
 		# replace population with children
         Positions = children
 
+        Convergence_curve[l] = best_eval
+
         if l % 1 == 0:
             print(["At iteration " + str(l) + " the best fitness is " + str(best_eval)])
 
