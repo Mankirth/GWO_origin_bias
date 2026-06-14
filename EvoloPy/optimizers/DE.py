@@ -92,7 +92,7 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
             mutant_sol = numpy.clip(mutant_sol, lb, ub)
 
             # calc fitness
-            mutant_fitness = objf(mutant_sol)
+            mutant_fitness = objf(mutant_sol + OriginShift)
             # s.func_evals += 1
 
             # replace if mutant_fitness is better
