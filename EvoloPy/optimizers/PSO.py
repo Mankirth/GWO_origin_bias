@@ -7,6 +7,7 @@ Mirrors GWO_modified behavior.
 import numpy as np
 import random
 from EvoloPy.solution import solution
+from RealWorld import RWBench
 import time
 
 def PSO(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
@@ -24,10 +25,10 @@ def PSO(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
 
     s = solution()
 
-    if not isinstance(lb, list):
-        lb = [lb] * dim
-    if not isinstance(ub, list):
-        ub = [ub] * dim
+    # if not isinstance(lb, list):
+    #     lb = [lb] * dim
+    # if not isinstance(ub, list):
+    #     ub = [ub] * dim
 
     # --------------------------------------
     # Initial population and bookkeeping
@@ -41,13 +42,13 @@ def PSO(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     gBest = np.zeros(dim)
 
     pos = np.zeros((PopSize, dim))
-    for j in range(dim):
-        pos[:, j] = np.random.uniform(0, 1, PopSize) * (ub[j] - lb[j]) + lb[j]
+    for i in range(PopSize):
+        pos[i, :] = RWBench.GetRandomStart(objf)
 
     convergence_curve = np.zeros(iters)
 
     # --------------------------------------
-    print('PSO_modified is optimizing "' + objf.__name__ + '"')
+    print('PSO is optimizing "',objf, '"')
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
 
@@ -60,10 +61,13 @@ def PSO(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
         # Evaluate particles
         # --------------------------------------
         for i in range(PopSize):
-            pos[i] = np.clip(pos[i], lb, ub)
+
+            # Return back the search agents that go beyond the boundaries of the search space
+            for j in range(dim):
+                pos[i, j] = np.clip(pos[i, j], lb[j], ub[j])
 
             # Evaluate
-            fitness = objf(pos[i, :] + OriginShift)
+            fitness = RWBench.Eval(pos[i, :] + OriginShift, objf)[0]
 
             # Update personal best
             if fitness < pBestScore[i]:
@@ -108,6 +112,6 @@ def PSO(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     s.convergence = convergence_curve
     s.optimizer = "PSO"
     s.bestIndividual = gBest
-    s.objfname = objf.__name__
+    s.objfname = str(objf)
 
     return s

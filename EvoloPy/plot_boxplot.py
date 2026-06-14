@@ -51,7 +51,7 @@ def run(results_directory, optimizer, objectivefunc, Iterations):
             loc="upper right",
             bbox_to_anchor=(1.2, 1.02),
         )
-        fig_name = results_directory + "/boxplot-" + objective_name + ".png"
+        fig_name = results_directory + "/boxplot-" + str(objective_name) + ".png"
         plt.savefig(fig_name, bbox_inches="tight")
         plt.clf()
         # plt.show()

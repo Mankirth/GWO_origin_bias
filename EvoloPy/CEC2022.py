@@ -211,7 +211,7 @@ def levy_func(x, nx, Os, Mr, s_flag, r_flag):
   w = [1]*nx
 
   for i in range(nx):
-	   w[i] = 1.0 + (z[i] - 0.0)/4.0
+    w[i] = 1.0 + (z[i] - 0.0)/4.0
   
   term1 = pow((np.sin(PI*w[0])),2)
   term3 = pow((w[nx-1]-1),2) * (1+pow((np.sin(2*PI*w[nx-1])),2))

@@ -7,6 +7,7 @@ import random
 import numpy
 import math
 from EvoloPy.solution import solution
+from RealWorld import RWBench
 import time
 
 def reflect(value, lower_bound, upper_bound):
@@ -35,21 +36,21 @@ def GWO_modified(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed
     Delta_pos = numpy.zeros(dim)
     Delta_score = float("inf")
 
-    if not isinstance(lb, list):
-        lb = [lb] * dim
-    if not isinstance(ub, list):
-        ub = [ub] * dim
+    # if not isinstance(lb, list):
+    #     lb = [lb] * dim
+    # if not isinstance(ub, list):
+    #     ub = [ub] * dim
 
     # Initialize positions
     Positions = numpy.zeros((SearchAgents_no, dim))
-    for i in range(dim):
-        Positions[:, i] = numpy.random.uniform(0, 1, SearchAgents_no) * (ub[i] - lb[i]) + lb[i]
+    for i in range(SearchAgents_no):
+        Positions[i, :] = RWBench.GetRandomStart(objf)
 
     Convergence_curve = numpy.zeros(Max_iter)
     s = solution()
 
 
-    print('GWO_modified is optimizing "' + objf.__name__ + '"')
+    print('GWO_modified is optimizing "', objf, '"')
 
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
@@ -66,7 +67,7 @@ def GWO_modified(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed
                 Positions[i, j] = reflect(Positions[i, j], lb[j] - total_shift[j], ub[j] - total_shift[j])
 
             # Evaluate in original space
-            fitness = objf(Positions[i, :] + OriginShift + total_shift)
+            fitness = RWBench.Eval(Positions[i, :] + OriginShift + total_shift, objf)[0]
 
             # Update leaders
             if fitness < Alpha_score:
@@ -140,6 +141,6 @@ def GWO_modified(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed
     s.convergence = Convergence_curve
     s.optimizer = "GWOM"
     s.bestIndividual = Alpha_pos + total_shift
-    s.objfname = objf.__name__
+    s.objfname = str(objf)
 
     return s

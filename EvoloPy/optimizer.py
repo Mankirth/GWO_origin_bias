@@ -32,6 +32,7 @@ import warnings
 import os
 from EvoloPy import plot_convergence
 from EvoloPy import plot_boxplot
+from RealWorld import RWBench
 import sys
 numpy.set_printoptions(threshold=sys.maxsize)
 
@@ -39,10 +40,11 @@ warnings.simplefilter(action="ignore")
 
 
 def selector(algo, func_details, popSize, Iter, OriginShift, Seed):
-    function_name = func_details[0]
-    lb = func_details[1]
-    ub = func_details[2]
-    dim = func_details[3]
+    function_name = func_details
+    lb = RWBench.LowBounds(function_name)
+    ub = RWBench.UpBounds(function_name)
+    dim = RWBench.Dim(function_name)
+    Iter = int((10000 * dim) / popSize)
 
     if algo == "SSA":
         x = ssa.SSA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
@@ -55,7 +57,7 @@ def selector(algo, func_details, popSize, Iter, OriginShift, Seed):
     elif algo == "FFA":
         x = ffa.FFA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "GWO":
-        x = gwo.GWO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
+        x = gwo.GWO(int(function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "WOA":
         x = woa.WOA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "MVO":
@@ -73,7 +75,7 @@ def selector(algo, func_details, popSize, Iter, OriginShift, Seed):
     elif algo == "DE":
         x = de.DE(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "GWOM":
-        x = gwo_modified.GWO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
+        x = gwo_modified.GWO_modified(int(function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "PSOM":
         x = pso_modified.PSOM(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "ES":
@@ -155,10 +157,10 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
             # movement_vectors = [0] * NumOfRuns
 
             for k in range(0, NumOfRuns):
-                func_details = benchmarks.getFunctionDetails(objectivefunc[j])
-                func_details[1] += SearchShift
-                func_details[2] += SearchShift
-                x = selector(optimizer[i], func_details, PopulationSize, Iterations, OriginShift, k)
+                # func_details = benchmarks.getFunctionDetails(objectivefunc[j])
+                # func_details[1] = str(RWBench.LowBounds(objectivefunc[j]) + SearchShift)
+                # func_details[2] = str(RWBench.UpBounds(objectivefunc[j]) + SearchShift)
+                x = selector(optimizer[i], objectivefunc[j], PopulationSize, Iterations, OriginShift, k)
                 convergence[k] = x.convergence
                 optimizerName = x.optimizer
                 objfname = x.objfname

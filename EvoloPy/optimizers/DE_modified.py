@@ -2,6 +2,7 @@ import random
 import numpy
 import time
 from EvoloPy.solution import solution
+from RealWorld import RWBench
 
 # -------------------------
 # Reflection function
@@ -26,10 +27,10 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     crossover_ratio = 0.7
     stopping_func = None
 
-    # convert lb, ub to array
-    if not isinstance(lb, list):
-        lb = [lb for _ in range(dim)]
-        ub = [ub for _ in range(dim)]
+    # # convert lb, ub to array
+    # if not isinstance(lb, list):
+    #     lb = [lb for _ in range(dim)]
+    #     ub = [ub for _ in range(dim)]
 
     # solution
     s = solution()
@@ -42,11 +43,7 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     population_fitness = numpy.array([float("inf") for _ in range(PopSize)])
 
     for p in range(PopSize):
-        sol = []
-        for d in range(dim):
-            d_val = random.uniform(lb[d], ub[d])
-            sol.append(d_val)
-
+        sol = RWBench.GetRandomStart(objf)
         population.append(sol)
 
     population = numpy.array(population)
@@ -68,7 +65,7 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
 
     convergence_curve = numpy.zeros(iters)
     # start work
-    print('DE is optimizing  "' + objf.__name__ + '"')
+    print('DE is optimizing  "',objf, '"')
 
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
@@ -116,7 +113,7 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
             #mutant_sol = numpy.clip(mutant_sol, lb, ub)
 
             # calc fitness
-            mutant_fitness = objf(mutant_sol + OriginShift + total_shift)
+            mutant_fitness = RWBench.Eval(mutant_sol + OriginShift + total_shift, objf)[0]
             # s.func_evals += 1
 
             # replace if mutant_fitness is better
@@ -148,11 +145,7 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
                 population_fitness = numpy.array([float("inf") for _ in range(PopSize)])
 
                 for p in range(PopSize):
-                    sol = []
-                    for d in range(dim):
-                        d_val = random.uniform(lb[d], ub[d])
-                        sol.append(d_val)
-
+                    sol = RWBench.GetRandomStart(objf)
                     population.append(sol)
 
                 population = numpy.array(population)
@@ -173,7 +166,7 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
         s.convergence = convergence_curve
         s.optimizer = "DEM"
         s.bestIndividual = s.leader_solution + total_shift
-        s.objfname = objf.__name__
-
+        s.objfname = str(objf)
+        
     # return solution
     return s

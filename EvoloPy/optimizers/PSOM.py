@@ -7,6 +7,7 @@ Mirrors GWO_modified behavior.
 import numpy as np
 import random
 from EvoloPy.solution import solution
+from RealWorld import RWBench
 import time
 
 
@@ -41,10 +42,10 @@ def PSOM(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
 
     s = solution()
 
-    if not isinstance(lb, list):
-        lb = [lb] * dim
-    if not isinstance(ub, list):
-        ub = [ub] * dim
+    # if not isinstance(lb, list):
+    #     lb = [lb] * dim
+    # if not isinstance(ub, list):
+    #     ub = [ub] * dim
 
     # --------------------------------------
     # Initial population and bookkeeping
@@ -58,8 +59,8 @@ def PSOM(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     gBest = np.zeros(dim)
 
     pos = np.zeros((PopSize, dim))
-    for j in range(dim):
-        pos[:, j] = np.random.uniform(0, 1, PopSize) * (ub[j] - lb[j]) + lb[j]
+    for i in range(PopSize):
+        pos[i, :] = RWBench.GetRandomStart(objf)
 
     # Accumulated shift (just like GWO_modified)
     total_shift = np.zeros(dim)
@@ -67,7 +68,7 @@ def PSOM(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     convergence_curve = np.zeros(iters)
 
     # --------------------------------------
-    print('PSO_modified is optimizing "' + objf.__name__ + '"')
+    print('PSO_modified is optimizing "',objf, '"')
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
 
@@ -90,7 +91,7 @@ def PSOM(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
                 )
 
             # Evaluate in shifted space
-            fitness = objf(pos[i, :] + OriginShift + total_shift)
+            fitness = RWBench.Eval(pos[i, :] + OriginShift + total_shift, objf)[0]
 
             # Update personal best
             if fitness < pBestScore[i]:
@@ -167,7 +168,7 @@ def PSOM(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     s.convergence = convergence_curve
     s.optimizer = "PSOM"
     s.bestIndividual = gBest + total_shift
-    s.objfname = objf.__name__
+    s.objfname = str(objf)
     s.shift = total_shift
 
     return s

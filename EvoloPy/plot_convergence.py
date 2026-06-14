@@ -28,7 +28,7 @@ def run(results_directory, optimizer, objectivefunc, Iterations):
         plt.ylabel("Fitness")
         plt.legend(loc="upper right", bbox_to_anchor=(1.2, 1.02))
         plt.grid()
-        fig_name = results_directory + "/convergence-" + objective_name + ".png"
+        fig_name = results_directory + "/convergence-" + str(objective_name) + ".png"
         plt.savefig(fig_name, bbox_inches="tight")
         plt.clf()
         # plt.show()

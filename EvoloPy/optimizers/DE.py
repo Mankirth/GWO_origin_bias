@@ -2,6 +2,7 @@ import random
 import numpy
 import time
 from EvoloPy.solution import solution
+from RealWorld import RWBench
 
 
 # Differential Evolution (DE)
@@ -16,9 +17,9 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     stopping_func = None
 
     # convert lb, ub to array
-    if not isinstance(lb, list):
-        lb = [lb for _ in range(dim)]
-        ub = [ub for _ in range(dim)]
+    # if not isinstance(lb, list):
+    #     lb = [lb for _ in range(dim)]
+    #     ub = [ub for _ in range(dim)]
 
     # solution
     s = solution()
@@ -31,18 +32,14 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     population_fitness = numpy.array([float("inf") for _ in range(PopSize)])
 
     for p in range(PopSize):
-        sol = []
-        for d in range(dim):
-            d_val = random.uniform(lb[d], ub[d])
-            sol.append(d_val)
-
+        sol = RWBench.GetRandomStart(objf)
         population.append(sol)
 
     population = numpy.array(population)
 
     # calculate fitness for all the population
     for i in range(PopSize):
-        fitness = objf(population[i, :] + OriginShift)
+        fitness = RWBench.Eval(population[i, :] + OriginShift, objf)[0]
         population_fitness[p] = fitness
         # s.func_evals += 1
 
@@ -53,7 +50,7 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
 
     convergence_curve = numpy.zeros(iters)
     # start work
-    print('DE is optimizing  "' + objf.__name__ + '"')
+    print('DE is optimizing  "',objf, '"')
 
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
@@ -91,8 +88,11 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
             # clip new solution (mutant)
             mutant_sol = numpy.clip(mutant_sol, lb, ub)
 
+            for j in range(dim):
+                mutant_sol = numpy.clip(mutant_sol[j], lb[j], ub[j])
+
             # calc fitness
-            mutant_fitness = objf(mutant_sol)
+            mutant_fitness = RWBench.Eval(mutant_sol + OriginShift, objf)[0]
             # s.func_evals += 1
 
             # replace if mutant_fitness is better
@@ -120,7 +120,7 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
         s.convergence = convergence_curve
         s.optimizer = "DE"
         s.bestIndividual = s.leader_solution
-        s.objfname = objf.__name__
+        s.objfname = str(objf)
 
     # return solution
     return s
