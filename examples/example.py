@@ -17,26 +17,36 @@ from EvoloPy.optimizer import run
 
 # Select optimizers
 # "SSA","PSO","GA","BAT","FFA","GWO","WOA","MVO","MFO","CS","HHO","SCA","JAYA","DE"
-optimizer = ["EPSO", "PSO", "FPSO"]
+optimizer = ["GWO"]
 
 # Select benchmark function"
 # "F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15","F16","F17","F18","F19","F20","F21","F22","F23","F24"
 # "ackley", "rosenbrock", "rastrigin", "griewank"
-objectivefunc = ["F6","F7","F8","F9","F10","F11","F12"]
+# 1,2,3,4,5,45,46,47,48,49,50
+objectivefunc = ["RW45","RW46","RW47","RW48","RW49","RW50"]
+
+# Select number of iterations per objective function
+Iters = [5000, 5000, 5000, 6000, 6000, 6000]
 
 # Select number of repetitions for each experiment.
 # To obtain meaningful statistical results, usually 30 independent runs are executed for each algorithm.
 NumOfRuns = 30
 
-# Select general parameters for all optimizers (population size, number of iterations) ....
-params = {"PopulationSize": 50, "Iterations": 2000, "OriginShift": 0, "SearchShift": 0}
 
-# Choose whether to Export the results in different formats
-export_flags = {
-    "Export_avg": True,
-    "Export_details": True,
-    "Export_convergence": True,
-    "Export_boxplot": True,
-}
+for a in range(1):
+    
+    # Select general parameters for all optimizers (population size, number of iterations) ....
+    params = {"PopulationSize": 50, "Iterations": Iters, "OriginShift": 0, "SearchShift": 0}
 
-run(optimizer, objectivefunc, NumOfRuns, params, export_flags)
+    # Choose whether to Export the results in different formats
+    export_flags = {
+        "Export_avg": True,
+        "Export_details": True,
+        "Export_convergence": True,
+        "Export_boxplot": True,
+    }
+
+
+    run(optimizer, objectivefunc, NumOfRuns, params, export_flags)
+
+   

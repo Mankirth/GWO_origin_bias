@@ -5,11 +5,12 @@ Created on Tue May 17 15:50:25 2016
 @author: hossam
 """
 from pathlib import Path
-import EvoloPy.optimizers.FinalPSO as pso
-import EvoloPy.optimizers.Final5PSO as fpso
-import EvoloPy.optimizers.FinalEPSO as epso
 import EvoloPy.optimizers.MVO as mvo
 import EvoloPy.optimizers.GWO as gwo
+import EvoloPy.optimizers.PSO as pso
+import EvoloPy.optimizers.PSOM as pso_modified
+import EvoloPy.optimizers.ES as es
+import EvoloPy.optimizers.ESM as esm
 import EvoloPy.optimizers.MFO as mfo
 import EvoloPy.optimizers.CS as cs
 import EvoloPy.optimizers.BAT as bat
@@ -21,10 +22,10 @@ import EvoloPy.optimizers.HHO as hho
 import EvoloPy.optimizers.SCA as sca
 import EvoloPy.optimizers.JAYA as jaya
 import EvoloPy.optimizers.DE as de
-import EvoloPy.optimizers.GWO_epsilon as gwo_epsilon
+import EvoloPy.optimizers.DE_modified as de_modified
 import EvoloPy.optimizers.GWO_modified as gwo_modified
-import EvoloPy.optimizers.GWO_modified_shrunk as gwo_modified_shrunk
-from EvoloPy import CEC2022 as benchmarks
+#from EvoloPy import benchmarks
+from RealWorld import RWBench as benchmarks
 import csv
 import numpy
 import time
@@ -47,11 +48,7 @@ def selector(algo, func_details, popSize, Iter, OriginShift, Seed):
     if algo == "SSA":
         x = ssa.SSA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "PSO":
-        x = pso.PSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, Seed)
-    elif algo == "FPSO":
-        x = fpso.FPSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, Seed)
-    elif algo == "EPSO":
-        x = epso.EPSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, Seed)
+        x = pso.PSO(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     elif algo == "GA":
         x = ga.GA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "BAT":
@@ -75,13 +72,17 @@ def selector(algo, func_details, popSize, Iter, OriginShift, Seed):
     elif algo == "JAYA":
         x = jaya.JAYA(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
     elif algo == "DE":
-        x = de.DE(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter)
-    elif algo == "GWO_epsilon":
-        x = gwo_epsilon.GWO_epsilon(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
-    elif algo == "GWO_modified":
+        x = de.DE(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
+    elif algo == "GWOM":
         x = gwo_modified.GWO_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
-    elif algo == "GWO_modified_shrunk":
-        x = gwo_modified_shrunk.GWO_modified_shrunk(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
+    elif algo == "PSOM":
+        x = pso_modified.PSOM(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
+    elif algo == "ES":
+        x = es.ES(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
+    elif algo == "ESM":
+        x = esm.ESM(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
+    elif algo == "DEM":
+        x = de_modified.DE_modified(getattr(benchmarks, function_name), lb, ub, dim, popSize, Iter, OriginShift, Seed)
     else:
         return None
     return x
@@ -141,7 +142,12 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
     results_directory = time.strftime("%Y-%m-%d-%H-%M-%S") + "/"
     Path(results_directory).mkdir(parents=True, exist_ok=True)
 
-    for l in range(0, Iterations):
+    MaxIterations = 0
+    for i in range(0, len(Iterations)):
+        if(MaxIterations < Iterations[i]):
+            MaxIterations = Iterations[i]
+
+    for l in range(0, MaxIterations):
         CnvgHeader.append("Iter" + str(l + 1))
 
     for i in range(0, len(optimizer)):
@@ -158,7 +164,7 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
                 func_details = benchmarks.getFunctionDetails(objectivefunc[j])
                 func_details[1] += SearchShift
                 func_details[2] += SearchShift
-                x = selector(optimizer[i], func_details, PopulationSize, Iterations, OriginShift, k)
+                x = selector(optimizer[i], func_details, PopulationSize, Iterations[j], OriginShift, k)
                 convergence[k] = x.convergence
                 optimizerName = x.optimizer
                 objfname = x.objfname
@@ -171,32 +177,12 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
                             Flag_details == False
                         ):  # just one time to write the header of the CSV file
                             header = numpy.concatenate(
-                                [["Optimizer", "objfname", "ExecutionTime", "Individual", "Shift"], CnvgHeader]
+                                [["Optimizer", "objfname", "ExecutionTime", "Individual"], CnvgHeader]
                             )
                             writer.writerow(header)
                             Flag_details = True  # at least one experiment
                         executionTime[k] = x.executionTime
                         a = numpy.array([x.optimizer, x.objfname, x.executionTime, x.bestIndividual] + x.convergence.tolist(),  dtype=object)
-                        writer.writerow(a)
-                    out.close()
-
-                    ExportToFile = results_directory + "experiment_positions.csv"
-                    with open(ExportToFile, "a", newline="\n") as out:
-                        writer = csv.writer(out, delimiter=",")
-                        if (
-                            Flag_details2 == False
-                        ):  # just one time to write the header of the CSV file
-                            header = numpy.concatenate(
-                                [["Optimizer", "objfname", "Starting Position", "Restart 1 End", "Restart 2 Beginning", "Restart 2 End", "Restart 3 Beginning", "Restart 3 End", "Restart 4 Beginning", "Restart 4 End", "Restart 5 Beginning", "Final Positions"]]
-                            )
-                            writer.writerow(header)
-                            Flag_details2 = True  # at least one experiment
-                        executionTime[k] = x.executionTime
-                        a = numpy.array([x.optimizer, x.objfname, x.restart1Initial, x.restart1End, 
-                                        x.restart2Initial, x.restart2End, 
-                                        x.restart3Initial, x.restart3End, 
-                                        x.restart4Initial, x.restart4End, 
-                                        x.restart5Initial, x.endingPositions],  dtype=object)
                         writer.writerow(a)
                     out.close()
   
@@ -224,7 +210,7 @@ def run(optimizer, objectivefunc, NumOfRuns, params, export_flags):
                 out.close()
 
     if Export_convergence == True:
-        plot_convergence.run(results_directory, optimizer, objectivefunc, Iterations)
+        plot_convergence.run(results_directory, optimizer, objectivefunc, MaxIterations)
 
     if Export_boxplot == True:
         plot_boxplot.run(results_directory, optimizer, objectivefunc, Iterations)

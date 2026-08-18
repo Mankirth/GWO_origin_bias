@@ -19,7 +19,7 @@ def run(results_directory, optimizer, objectivefunc, Iterations):
                 (fileResultsDetailsData["Optimizer"] == optimizer_name)
                 & (fileResultsDetailsData["objfname"] == objective_name)
             ]
-            detailedData = detailedData["Iter" + str(Iterations)]
+            detailedData = detailedData["Iter" + str(Iterations[j])]
             detailedData = np.array(detailedData).T.tolist()
             data.append(detailedData)
 
@@ -50,7 +50,7 @@ def run(results_directory, optimizer, objectivefunc, Iterations):
             loc="upper right",
             bbox_to_anchor=(1.2, 1.02),
         )
-        fig_name = results_directory + "/boxplot-" + objective_name + ".png"
+        fig_name = results_directory + "/boxplot-" + str(objective_name) + ".png"
         plt.savefig(fig_name, bbox_inches="tight")
         plt.clf()
         # plt.show()

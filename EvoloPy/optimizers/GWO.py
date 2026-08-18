@@ -9,32 +9,12 @@ import random
 import numpy
 import math
 from EvoloPy.solution import solution
+from RealWorld import RWBench
 import time
-from numpy.random import MT19937
-from numpy.random import RandomState, SeedSequence
-
-def reflect(value, lower_bound, upper_bound):
-
-    if lower_bound >= upper_bound:
-        return lower_bound  
-    
-    range_size = upper_bound - lower_bound
-    
-    normalized = (value - lower_bound) % (2 * range_size)
-    
-    if normalized > range_size:
-        return upper_bound - (normalized - range_size)
-    return lower_bound + normalized
 
 def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
     numpy.random.seed(Seed)
     random.seed(Seed)
-
-    # Max_iter=1000
-    # lb=-100
-    # ub=100
-    # dim=30
-    # SearchAgents_no=5
 
     # initialize alpha, beta, and delta_pos
     Alpha_pos = numpy.zeros(dim)
@@ -46,23 +26,21 @@ def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
     Delta_pos = numpy.zeros(dim)
     Delta_score = float("inf")
 
-    if not isinstance(lb, list):
+    if not isinstance(lb, list) and not isinstance(lb, numpy.ndarray):
         lb = [lb] * dim
-    if not isinstance(ub, list):
+    if not isinstance(ub, list) and not isinstance(lb, numpy.ndarray):
         ub = [ub] * dim
 
     # Initialize the positions of search agents
     Positions = numpy.zeros((SearchAgents_no, dim))
-    for i in range(dim):
-        Positions[:, i] = (
-            numpy.random.uniform(0, 1, SearchAgents_no) * (ub[i] - lb[i]) + lb[i]
-        )
+    for j in range(dim):
+            Positions[:, j] = numpy.random.uniform(0, 1, SearchAgents_no) * (ub[j] - lb[j]) + lb[j]
 
     Convergence_curve = numpy.zeros(Max_iter)
     s = solution()
 
     # Loop counter
-    print('GWO is optimizing  "' + objf.__name__ + '"')
+    print('GWO is optimizing "' + objf.__name__ + '"')
 
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
@@ -73,8 +51,6 @@ def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
             # Return back the search agents that go beyond the boundaries of the search space
             for j in range(dim):
                 Positions[i, j] = numpy.clip(Positions[i, j], lb[j], ub[j])
-                #Positions[i, j] = reflect(Positions[i, j], lb[j], ub[j])
-
 
             # Calculate objective function for each search agent
             fitness = objf(Positions[i, :] + OriginShift)

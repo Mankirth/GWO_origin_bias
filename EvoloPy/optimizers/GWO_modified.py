@@ -7,6 +7,7 @@ import random
 import numpy
 import math
 from EvoloPy.solution import solution
+from RealWorld import RWBench
 import time
 
 def reflect(value, lower_bound, upper_bound):
@@ -35,15 +36,15 @@ def GWO_modified(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed
     Delta_pos = numpy.zeros(dim)
     Delta_score = float("inf")
 
-    if not isinstance(lb, list):
+    if not isinstance(lb, list) and not isinstance(lb, numpy.ndarray):
         lb = [lb] * dim
-    if not isinstance(ub, list):
+    if not isinstance(ub, list) and not isinstance(lb, numpy.ndarray):
         ub = [ub] * dim
 
     # Initialize positions
     Positions = numpy.zeros((SearchAgents_no, dim))
-    for i in range(dim):
-        Positions[:, i] = numpy.random.uniform(0, 1, SearchAgents_no) * (ub[i] - lb[i]) + lb[i]
+    for j in range(dim):
+        Positions[:, j] = numpy.random.uniform(0, 1, SearchAgents_no) * (ub[j] - lb[j]) + lb[j]
 
     Convergence_curve = numpy.zeros(Max_iter)
     s = solution()
@@ -138,9 +139,8 @@ def GWO_modified(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed
     s.endTime = time.strftime("%Y-%m-%d-%H-%M-%S")
     s.executionTime = timerEnd - timerStart
     s.convergence = Convergence_curve
-    s.optimizer = "GWO_modified"
+    s.optimizer = "GWOM"
     s.bestIndividual = Alpha_pos + total_shift
     s.objfname = objf.__name__
-    s.shift = total_shift
 
     return s

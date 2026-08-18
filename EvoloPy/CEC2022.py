@@ -212,7 +212,7 @@ def levy_func(x, nx, Os, Mr, s_flag, r_flag):
 
   for i in range(nx):
     w[i] = 1.0 + (z[i] - 0.0)/4.0
-
+  
   term1 = pow((np.sin(PI*w[0])),2)
   term3 = pow((w[nx-1]-1),2) * (1+pow((np.sin(2*PI*w[nx-1])),2))
 
@@ -701,7 +701,7 @@ class cec2022_func():
         (nx,) = x.shape
         mx = 1
 
-        ObjFunc = np.zeros(mx)
+        ObjFunc = [0] * mx
         for i in range(mx):
             ObjFunc[i] = cec22_test_func(x, nx, 1, self.func)
         
