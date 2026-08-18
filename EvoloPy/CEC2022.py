@@ -701,7 +701,7 @@ class cec2022_func():
         (nx,) = x.shape
         mx = 1
 
-        ObjFunc = np.zeros(mx)
+        ObjFunc = [0] * mx
         for i in range(mx):
             ObjFunc[i] = cec22_test_func(x, nx, 1, self.func)
         

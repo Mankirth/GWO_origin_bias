@@ -25,10 +25,10 @@ def PSO(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
 
     s = solution()
 
-    # if not isinstance(lb, list):
-    #     lb = [lb] * dim
-    # if not isinstance(ub, list):
-    #     ub = [ub] * dim
+    if not isinstance(lb, list) and not isinstance(lb, np.ndarray):
+        lb = [lb] * dim
+    if not isinstance(ub, list) and not isinstance(ub, np.ndarray):
+        ub = [ub] * dim
 
     # --------------------------------------
     # Initial population and bookkeeping
@@ -42,13 +42,13 @@ def PSO(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     gBest = np.zeros(dim)
 
     pos = np.zeros((PopSize, dim))
-    for i in range(PopSize):
-        pos[i, :] = RWBench.GetRandomStart(objf)
+    for j in range(dim):
+        pos[:, j] = np.random.uniform(0, 1, PopSize) * (ub[j] - lb[j]) + lb[j]
 
     convergence_curve = np.zeros(iters)
 
     # --------------------------------------
-    print('PSO is optimizing "',objf, '"')
+    print('PSO is optimizing "' + objf.__name__ + '"')
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
 
@@ -67,7 +67,7 @@ def PSO(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
                 pos[i, j] = np.clip(pos[i, j], lb[j], ub[j])
 
             # Evaluate
-            fitness = RWBench.Eval(pos[i, :] + OriginShift, objf)[0]
+            fitness = objf(pos[i, :] + OriginShift)
 
             # Update personal best
             if fitness < pBestScore[i]:
@@ -112,6 +112,6 @@ def PSO(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     s.convergence = convergence_curve
     s.optimizer = "PSO"
     s.bestIndividual = gBest
-    s.objfname = str(objf)
+    s.objfname = objf.__name__
 
     return s

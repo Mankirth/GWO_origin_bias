@@ -28,9 +28,10 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     stopping_func = None
 
     # # convert lb, ub to array
-    # if not isinstance(lb, list):
-    #     lb = [lb for _ in range(dim)]
-    #     ub = [ub for _ in range(dim)]
+    if not isinstance(lb, list) and not isinstance(lb, numpy.ndarray):
+        lb = [lb] * dim
+    if not isinstance(ub, list) and not isinstance(ub, numpy.ndarray):
+        ub = [ub] * dim
 
     # solution
     s = solution()
@@ -38,13 +39,12 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     s.best = float("inf")
 
     # initialize population
-    population = []
+    population = numpy.zeros((PopSize, dim))
 
     population_fitness = numpy.array([float("inf") for _ in range(PopSize)])
 
-    for p in range(PopSize):
-        sol = RWBench.GetRandomStart(objf)
-        population.append(sol)
+    for j in range(dim):
+        population[:, j] = numpy.random.uniform(0, 1, PopSize) * (ub[j] - lb[j]) + lb[j]
 
     population = numpy.array(population)
 
@@ -54,7 +54,7 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     # calculate fitness for all the population
     for i in range(PopSize):
         fitness = objf(population[i, :] + OriginShift + total_shift)
-        population_fitness[p] = fitness
+        population_fitness[i] = fitness
         # s.func_evals += 1
 
         # is leader ?
@@ -65,7 +65,7 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
 
     convergence_curve = numpy.zeros(iters)
     # start work
-    print('DE is optimizing  "',objf, '"')
+    print('DE is optimizing "' + objf.__name__ + '"')
 
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
@@ -113,7 +113,7 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
             #mutant_sol = numpy.clip(mutant_sol, lb, ub)
 
             # calc fitness
-            mutant_fitness = RWBench.Eval(mutant_sol + OriginShift + total_shift, objf)[0]
+            mutant_fitness = objf(mutant_sol + OriginShift + total_shift)
             # s.func_evals += 1
 
             # replace if mutant_fitness is better
@@ -140,13 +140,12 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
                 s.leader_solution = numpy.zeros(dim)
 
                 # Reinitialize swarm: 1 at origin, rest random
-                population = []
+                population = numpy.zeros((PopSize, dim))
 
                 population_fitness = numpy.array([float("inf") for _ in range(PopSize)])
 
-                for p in range(PopSize):
-                    sol = RWBench.GetRandomStart(objf)
-                    population.append(sol)
+                for j in range(dim):
+                    population[:, j] = numpy.random.uniform(0, 1, PopSize) * (ub[j] - lb[j]) + lb[j]
 
                 population = numpy.array(population)
                 population[0, :] = numpy.zeros(dim)
@@ -160,13 +159,13 @@ def DE_modified(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
         # increase iterations
         t = t + 1
 
-        timerEnd = time.time()
-        s.endTime = time.strftime("%Y-%m-%d-%H-%M-%S")
-        s.executionTime = timerEnd - timerStart
-        s.convergence = convergence_curve
-        s.optimizer = "DEM"
-        s.bestIndividual = s.leader_solution + total_shift
-        s.objfname = str(objf)
-        
+    timerEnd = time.time()
+    s.endTime = time.strftime("%Y-%m-%d-%H-%M-%S")
+    s.executionTime = timerEnd - timerStart
+    s.convergence = convergence_curve
+    s.optimizer = "DEM"
+    s.bestIndividual = s.leader_solution + total_shift
+    s.objfname = objf.__name__
+
     # return solution
     return s

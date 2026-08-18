@@ -17,9 +17,10 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     stopping_func = None
 
     # convert lb, ub to array
-    # if not isinstance(lb, list):
-    #     lb = [lb for _ in range(dim)]
-    #     ub = [ub for _ in range(dim)]
+    if not isinstance(lb, list) and not isinstance(lb, numpy.ndarray):
+        lb = [lb] * dim
+    if not isinstance(ub, list) and not isinstance(ub, numpy.ndarray):
+        ub = [ub] * dim
 
     # solution
     s = solution()
@@ -27,20 +28,19 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     s.best = float("inf")
 
     # initialize population
-    population = []
+    population = numpy.zeros((PopSize, dim))
 
     population_fitness = numpy.array([float("inf") for _ in range(PopSize)])
 
-    for p in range(PopSize):
-        sol = RWBench.GetRandomStart(objf)
-        population.append(sol)
+    for j in range(dim):
+        population[:, j] = numpy.random.uniform(0, 1, PopSize) * (ub[j] - lb[j]) + lb[j]
 
     population = numpy.array(population)
 
     # calculate fitness for all the population
     for i in range(PopSize):
-        fitness = RWBench.Eval(population[i, :] + OriginShift, objf)[0]
-        population_fitness[p] = fitness
+        fitness = objf(population[i, :] + OriginShift)
+        population_fitness[i] = fitness
         # s.func_evals += 1
 
         # is leader ?
@@ -50,7 +50,7 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
 
     convergence_curve = numpy.zeros(iters)
     # start work
-    print('DE is optimizing  "',objf, '"')
+    print('DE is optimizing "' + objf.__name__ + '"')
 
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
@@ -69,7 +69,7 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
             ids_except_current = [_ for _ in range(PopSize) if _ != i]
             id_1, id_2, id_3 = random.sample(ids_except_current, 3)
 
-            mutant_sol = []
+            mutant_sol = numpy.zeros(dim)
             for d in range(dim):
                 d_val = population[id_1, d] + mutation_factor * (
                     population[id_2, d] - population[id_3, d]
@@ -79,20 +79,21 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
                 rn = random.uniform(0, 1)
                 if rn > crossover_ratio:
                     d_val = population[i, d]
+                d_val = numpy.clip(d_val, lb[d], ub[d])
 
                 # add dimension value to the mutant solution
-                mutant_sol.append(d_val)
+                mutant_sol[d] = d_val
 
             # 3. Replacement / Evaluation
 
             # clip new solution (mutant)
-            mutant_sol = numpy.clip(mutant_sol, lb, ub)
+            # mutant_sol = numpy.clip(mutant_sol, lb, ub)
 
-            for j in range(dim):
-                mutant_sol = numpy.clip(mutant_sol[j], lb[j], ub[j])
+            # for j in range(dim):
+            #     mutant_sol = numpy.clip(mutant_sol[j], lb[j], ub[j])
 
             # calc fitness
-            mutant_fitness = RWBench.Eval(mutant_sol + OriginShift, objf)[0]
+            mutant_fitness = objf(mutant_sol + OriginShift)
             # s.func_evals += 1
 
             # replace if mutant_fitness is better
@@ -114,13 +115,13 @@ def DE(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
         # increase iterations
         t = t + 1
 
-        timerEnd = time.time()
-        s.endTime = time.strftime("%Y-%m-%d-%H-%M-%S")
-        s.executionTime = timerEnd - timerStart
-        s.convergence = convergence_curve
-        s.optimizer = "DE"
-        s.bestIndividual = s.leader_solution
-        s.objfname = str(objf)
+    timerEnd = time.time()
+    s.endTime = time.strftime("%Y-%m-%d-%H-%M-%S")
+    s.executionTime = timerEnd - timerStart
+    s.convergence = convergence_curve
+    s.optimizer = "DE"
+    s.bestIndividual = s.leader_solution
+    s.objfname = objf.__name__
 
     # return solution
     return s

@@ -26,21 +26,21 @@ def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
     Delta_pos = numpy.zeros(dim)
     Delta_score = float("inf")
 
-    # if not isinstance(lb, list):
-    #     lb = [lb] * dim
-    # if not isinstance(ub, list):
-    #     ub = [ub] * dim
+    if not isinstance(lb, list) and not isinstance(lb, numpy.ndarray):
+        lb = [lb] * dim
+    if not isinstance(ub, list) and not isinstance(lb, numpy.ndarray):
+        ub = [ub] * dim
 
     # Initialize the positions of search agents
     Positions = numpy.zeros((SearchAgents_no, dim))
-    for i in range(SearchAgents_no):
-        Positions[i, :] = RWBench.GetRandomStart(objf)
+    for j in range(dim):
+            Positions[:, j] = numpy.random.uniform(0, 1, SearchAgents_no) * (ub[j] - lb[j]) + lb[j]
 
     Convergence_curve = numpy.zeros(Max_iter)
     s = solution()
 
     # Loop counter
-    print('GWO is optimizing  "', objf,'"')
+    print('GWO is optimizing "' + objf.__name__ + '"')
 
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
@@ -53,7 +53,7 @@ def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
                 Positions[i, j] = numpy.clip(Positions[i, j], lb[j], ub[j])
 
             # Calculate objective function for each search agent
-            fitness = RWBench.Eval(Positions[i, :] + OriginShift, objf)[0]
+            fitness = objf(Positions[i, :] + OriginShift)
 
             # Update Alpha, Beta, and Delta
             if fitness < Alpha_score:
@@ -134,6 +134,6 @@ def GWO(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
     s.convergence = Convergence_curve
     s.optimizer = "GWO"
     s.bestIndividual = Alpha_pos
-    s.objfname = str(objf)
+    s.objfname = objf.__name__
 
     return s

@@ -9,6 +9,7 @@ import random
 import numpy
 import math
 from EvoloPy.solution import solution
+from RealWorld import RWBench
 import time
 
 def reflect(value, lower_bound, upper_bound):
@@ -28,9 +29,9 @@ def ESM(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
     numpy.random.seed(Seed)
     random.seed(Seed)
 
-    if not isinstance(lb, list):
+    if not isinstance(lb, list) and not isinstance(lb, numpy.ndarray):
         lb = [lb] * dim
-    if not isinstance(ub, list):
+    if not isinstance(ub, list) and not isinstance(ub, numpy.ndarray):
         ub = [ub] * dim
 
     # define the maximum step size
@@ -46,10 +47,8 @@ def ESM(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
 
     # Initialize the positions of search agents at centroid
     Positions = numpy.zeros((SearchAgents_no, dim))
-    for i in range(dim):
-        Positions[:, i] = (
-            numpy.random.uniform(0, 1, SearchAgents_no) * (ub[i] - lb[i]) + lb[i]
-        )
+    for j in range(dim):
+        Positions[:, j] = numpy.random.uniform(0, 1, SearchAgents_no) * (ub[j] - lb[j]) + lb[j]
 
     # Accumulated shift (just like GWO_modified)
     total_shift = numpy.zeros(dim)
@@ -58,7 +57,7 @@ def ESM(objf, lb, ub, dim, SearchAgents_no, Max_iter, OriginShift, Seed):
     s = solution()
 
     # Loop counter
-    print('ESM is optimizing  "' + objf.__name__ + '"')
+    print('ESM is optimizing  "', objf.__name__,'"')
 
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")

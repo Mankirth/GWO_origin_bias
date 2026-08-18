@@ -9,7 +9,7 @@
 from cec2020rwcw import global_D, global_gn, global_hn, get_bounds, cec2020rwc
 import numpy as np
 
-func_num = 3
+func_num = 45
 D = global_D[func_num-1]
 ng = global_gn[func_num-1]
 nh = global_hn[func_num-1]
@@ -17,7 +17,7 @@ lowb = np.zeros(D)
 upb = np.zeros(D)
 
 get_bounds(func_num, lowb, upb, D)
-print(lowb,upb)
+print(int((10000 * D) / 50))
 
 xval = [2000,100,4000,36.52718493,0,20,8.36616895]
 fval = np.zeros(1)

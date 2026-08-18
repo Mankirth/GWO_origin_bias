@@ -41,11 +41,10 @@ def PSOM(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     c2 = 2
 
     s = solution()
-
-    # if not isinstance(lb, list):
-    #     lb = [lb] * dim
-    # if not isinstance(ub, list):
-    #     ub = [ub] * dim
+    if not isinstance(lb, list) and not isinstance(lb, np.ndarray):
+        lb = [lb] * dim
+    if not isinstance(ub, list) and not isinstance(ub, np.ndarray):
+        ub = [ub] * dim
 
     # --------------------------------------
     # Initial population and bookkeeping
@@ -59,8 +58,8 @@ def PSOM(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     gBest = np.zeros(dim)
 
     pos = np.zeros((PopSize, dim))
-    for i in range(PopSize):
-        pos[i, :] = RWBench.GetRandomStart(objf)
+    for j in range(dim):
+        pos[:, j] = np.random.uniform(0, 1, PopSize) * (ub[j] - lb[j]) + lb[j]
 
     # Accumulated shift (just like GWO_modified)
     total_shift = np.zeros(dim)
@@ -68,7 +67,7 @@ def PSOM(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     convergence_curve = np.zeros(iters)
 
     # --------------------------------------
-    print('PSO_modified is optimizing "',objf, '"')
+    print('PSO_modified is optimizing "' + objf.__name__ + '"')
     timerStart = time.time()
     s.startTime = time.strftime("%Y-%m-%d-%H-%M-%S")
 
@@ -91,7 +90,7 @@ def PSOM(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
                 )
 
             # Evaluate in shifted space
-            fitness = RWBench.Eval(pos[i, :] + OriginShift + total_shift, objf)[0]
+            fitness = objf(pos[i, :] + OriginShift + total_shift)
 
             # Update personal best
             if fitness < pBestScore[i]:
@@ -168,7 +167,7 @@ def PSOM(objf, lb, ub, dim, PopSize, iters, OriginShift, Seed):
     s.convergence = convergence_curve
     s.optimizer = "PSOM"
     s.bestIndividual = gBest + total_shift
-    s.objfname = str(objf)
+    s.objfname = objf.__name__
     s.shift = total_shift
 
     return s

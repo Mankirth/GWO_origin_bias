@@ -20,7 +20,7 @@ def run(results_directory, optimizer, objectivefunc, Iterations):
                 (fileResultsDetailsData["Optimizer"] == optimizer_name)
                 & (fileResultsDetailsData["objfname"] == objective_name)
             ]
-            detailedData = detailedData["Iter" + str(Iterations-1)]
+            detailedData = detailedData["Iter" + str(Iterations[j])]
             detailedData = np.array(detailedData).T.tolist()
             data.append(detailedData)
 
