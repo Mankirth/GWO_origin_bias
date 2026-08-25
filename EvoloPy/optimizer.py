@@ -25,7 +25,8 @@ import EvoloPy.optimizers.DE as de
 import EvoloPy.optimizers.DE_modified as de_modified
 import EvoloPy.optimizers.GWO_modified as gwo_modified
 #from EvoloPy import benchmarks
-from RealWorld import RWBench as benchmarks
+from EvoloPy import CEC2022 as benchmarks
+#from RealWorld import RWBench as benchmarks
 import csv
 import numpy
 import time

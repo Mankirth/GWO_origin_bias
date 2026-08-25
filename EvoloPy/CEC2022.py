@@ -703,7 +703,7 @@ class cec2022_func():
 
         ObjFunc = [0] * mx
         for i in range(mx):
-            ObjFunc[i] = cec22_test_func(x, nx, 1, self.func)
+            ObjFunc[i] = cec22_test_func(x, nx, 1, self.func)[0]
         
         self.ObjFunc = ObjFunc[0] if mx == 1 else ObjFunc
         

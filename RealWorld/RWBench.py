@@ -9,6 +9,18 @@
 from RealWorld import cec2020rwcw
 import numpy as np
 
+def RW1(xval):
+    D = cec2020rwcw.global_D[1-1]
+    ng = cec2020rwcw.global_gn[1-1]
+    nh = cec2020rwcw.global_hn[1-1]
+
+    fval = np.zeros(1)
+    gval = np.zeros(ng)
+    hval = np.zeros(nh)
+    cec2020rwcw.cec2020rwc(xval, 1, fval, gval, hval, D, ng, nh)
+
+    return fval[0]
+
 def RW45(xval):
     D = cec2020rwcw.global_D[45-1]
     ng = cec2020rwcw.global_gn[45-1]

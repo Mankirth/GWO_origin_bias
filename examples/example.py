@@ -17,16 +17,16 @@ from EvoloPy.optimizer import run
 
 # Select optimizers
 # "SSA","PSO","GA","BAT","FFA","GWO","WOA","MVO","MFO","CS","HHO","SCA","JAYA","DE"
-optimizer = ["GWO"]
+optimizer = ["GWO", "GWOM", "PSO", "PSOM"]
 
 # Select benchmark function"
 # "F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15","F16","F17","F18","F19","F20","F21","F22","F23","F24"
 # "ackley", "rosenbrock", "rastrigin", "griewank"
-# 1,2,3,4,5,45,46,47,48,49,50
-objectivefunc = ["RW45","RW46","RW47","RW48","RW49","RW50"]
+# "RW45","RW46","RW47","RW48","RW49","RW50"
+objectivefunc = ["F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"]
 
 # Select number of iterations per objective function
-Iters = [5000, 5000, 5000, 6000, 6000, 6000]
+Iters = [2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000]
 
 # Select number of repetitions for each experiment.
 # To obtain meaningful statistical results, usually 30 independent runs are executed for each algorithm.
